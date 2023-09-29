@@ -1,0 +1,31 @@
+body{
+    background: #eff4fa
+}
+
+.player-head{
+    width: 30px; /* Adjust the width and height to your desired circle size */
+    height: 30px;
+    border-radius: 50%; /* Set border-radius to 50% to create a circle */
+}
+
+.player-link {
+    color: #333;
+    text-decoration: none;
+}
+.player-link:hover {
+    text-decoration: underline; /* Add underline when the link is hovered over */
+}
+
+.navbar {
+    margin-bottom: 30px;
+}
+
+#tooltip {
+    position: absolute;
+    background-color: #333; /* Background color */
+    color: #fff; /* Text color */
+    padding: 5px; /* Add padding for better appearance */
+    border-radius: 5px; /* Rounded corners */
+    display: none; /* Initially hide the tooltip */
+    z-index: 100;
+  }

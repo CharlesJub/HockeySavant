@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Stats - {{ player_data[1] }}</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png')}}">
+
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/styles.css')}}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{{ url_for('static',filename='script/script.js')}}"></script>
+    <script defer src="{{ url_for('static',filename='script/rink.js')}}"></script>
+    <script defer src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</head>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="/players">Players</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Team</a>
+          </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Fantasy</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#">Prospects</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#">About</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+<body>
+  <div class="container" style="margin-bottom: 20px;">
+      <div class="row">
+          <div class="col-sm">
+              <!-- Content for the first pane -->
+              <div class="title">{{ player_data[1] }}</div>
+              <img src="https://assets.nhle.com/mugs/nhl/latest/{{ player_data[0] }}.png" alt="Picture of {{ player_data[1] }}">
+              <div class="player_info" id="{{ player_data[0]}}">{{ player_data[8] }} | Shoots: {{ player_data[6] }} | {{ player_data[4] }} {{ player_data[5] }}LBS | Age: {{ player_data[2] }} | Nationality: {{ player_data[3] }}</div>
+              <table class="table table-striped" style="width:20%";>
+                  <tr>
+                      <th>Season</th>
+                      <th>GP</th>
+                      <th>G</th>
+                      <th>A</th>
+                      <th>P</th>
+                      <th>S</th>
+                      <th>Sh%</th>
+                      <th>PIM</th>
+                  </tr>
+                  {% for row in player_stats[-3:] %}
+                  <tr class="tr-data">
+                      <td>{{ row[1] }}</td>
+                      <td>{{ row[2] }}</td>
+                      <td>{{ row[3] }}</td>
+                      <td>{{ row[4] }}</td>
+                      <td>{{ row[5] }}</td>
+                      <td>{{ row[6] }}</td>
+                      <td>{{ row[7] }}</td>
+                      <td>{{ row[8] }}</td>
+                  </tr>
+                  {% endfor %}
+              </table>
+              
+      
+          </div>
+          <div class="col-sm">
+              <!-- Content for the second pane -->
+              
+              
+          </div>
+          <div class="col-sm">
+              <!-- Content for the third pane -->
+              <img id='rink_image' src="{{ url_for('static', filename='hockey_rink_clear.jpg')}}" alt="" hidden>
+              <div id="tooltip" style="position: absolute; display: none;"></div>
+              <canvas id="rink_canvas" width="800" height="340"></canvas>
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="btn btn-secondary video-filter event-filter active" name="goals">
+                    <input type="radio" autocomplete="off" checked> Goals
+                  </label>
+                  <label class="btn btn-secondary video-filter event-filter" name="assists">
+                    <input type="radio" autocomplete="off"> Assists
+                  </label>
+                  <label class="btn btn-secondary video-filter event-filter" name="goals_for">
+                    <input type="radio" autocomplete="off"> Goals For
+                  </label>
+                  <label class="btn btn-secondary video-filter event-filter" name="goals_against">
+                      <input type="radio" autocomplete="off"> Goals Against
+                    </label>
+                </div>
+                <div class="btn-group btn-group-toggle " data-toggle="buttons">
+                  <label class="btn btn-secondary video-filter strength-filter active" name="all_events">
+                    <input type="radio" autocomplete="off" checked> All
+                  </label>
+                  <label class="btn btn-secondary video-filter strength-filter" name="ev_events">
+                    <input type="radio" autocomplete="off"> Even Strength
+                  </label>
+                  <label class="btn btn-secondary video-filter strength-filter" name="pp_events">
+                    <input type="radio" autocomplete="off"> Power-play
+                  </label>
+                  <label class="btn btn-secondary video-filter strength-filter" name="sh_events">
+                      <input type="radio" autocomplete="off"> Shorthanded
+                    </label>
+                </div>
+          </div>
+      </div>
+  </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+  jQuery(document).ready(function($) {
+    
+  })
+</script>
+</html>
+
+

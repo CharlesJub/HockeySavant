@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HockeySavant</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png')}}">
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/styles.css')}}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{{ url_for('static',filename='script/script.js')}}"></script>
+    <script defer src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+
+</head>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="/players">Players</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Team</a>
+          </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Fantasy</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#">Prospects</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#">About</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+<body>
+    <div class="container">
+      <select class="stats-filter" id="position" autocomplete="off">
+        <option value="Skater" selected>Skater</option>
+        <option value="Forward">Forward</option>
+        <option value="Defenceman">Defenceman</option>
+        <option value="Goalie">Goalie</option>
+      </select>
+      <select class="stats-filter" id="season" autocomplete="off">
+        <option value="20222023" selected>2022</option>
+        <option value="20212022">2021</option>
+        <option value="20202021">2020</option>
+        <option value="20192020">2019</option>
+        <option value="20182019">2018</option>
+      </select>
+      <select class="stats-filter" id="min-played-toi" autocomplete="off">
+        <option value="0">> 0 min</option>
+        <option value="600">> 10 min</option>
+        <option value="12000">> 200 min</option>
+        <option value="24000">> 400 min</option >
+        <option value="36000" selected> > 600 min</option>
+        <option value="48000">> 800 min</option>
+        <option value="60000">> 1000 min</option>
+        <option value="72000">> 1200 min</option>
+        <option value="84000">> 1400 min</option>
+        <option value="96000">> 1600 min</option>
+      </select>
+
+      
+
+
+
+
+        <table id="table" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td><img class="player-head" src="https://assets.nhle.com/mugs/nhl/latest/{{ row[0] }}.png" loading="eager"><a class="player-link" href="/player/{{row[0]}}">{{ row[2] }}</a></td>
+                    <td>{{ row[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+
