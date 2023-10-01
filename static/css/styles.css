@@ -29,3 +29,24 @@ body{
     display: none; /* Initially hide the tooltip */
     z-index: 100;
   }
+
+.player-stats {
+    border: #333;
+    border-style: solid;
+    border-width: 1px;
+    margin-bottom: 10px;
+    margin: 1px;
+    /* reduce width of player-stats */
+    width: 100px;
+    height: 750px;
+    text-align: center;
+    /* add space from top  */
+    padding-top: 5px;
+    max-width: 33%;
+}
+
+.btn-spacer {
+    display: block; 
+    /* add padding to the top and bottom of the button */
+    padding: 1px;
+  }
