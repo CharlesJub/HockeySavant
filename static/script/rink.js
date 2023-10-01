@@ -12,7 +12,7 @@ function copyRinkToCanvas(){
     ctx.drawImage(
         image, 
         0,0,
-        800, 340
+        600, 255
 
     );
 }
@@ -37,7 +37,7 @@ function updateRink(data) {
     new_ctx.fillStyle = "green";
     // Set the circle border color and width
     new_ctx.strokeStyle = "black"; // Border color
-    new_ctx.lineWidth = 2;       // Border width
+    new_ctx.lineWidth = 0.5;       // Border width
 
     // Add a single click event listener to the canvas
     newCanvas.addEventListener("click", function (event) {
@@ -114,6 +114,9 @@ function updateRink(data) {
     });
 }
 
+function updatePercentileGraph(data) {
+    // Create bar graph using 
+}
 function copyGoalToCanvas(){
     var canvas = document.querySelector("canvas");
     var goalMarks = document.querySelectorAll("#goal_mark");
@@ -183,7 +186,8 @@ jQuery(document).ready(function($) {
           success: function(data) {
             // Handle the data received from the server
             // Update the HTML on the /players page with the data
-            updateRink(data[0]);       
+            updateRink(data[0]);      
+            // updatePercentileGraph(data[1]);
           },
           error: function(error) {
             console.error('Error fetching data: ', error);
@@ -210,6 +214,8 @@ jQuery(document).ready(function($) {
             // Handle the data received from the server
             // Update the HTML on the /players page with the data
             updateRink(data);       
+            // updatePercentileGraph(data[1]);
+
             },
             error: function(error) {
             console.error('Error fetching data: ', error);
