@@ -24,7 +24,7 @@ body{
     position: absolute;
     background-color: #333; /* Background color */
     color: #fff; /* Text color */
-    padding: 5px; /* Add padding for better appearance */
+    padding: 3px; /* Add padding for better appearance */
     border-radius: 5px; /* Rounded corners */
     display: none; /* Initially hide the tooltip */
     z-index: 100;
@@ -37,16 +37,28 @@ body{
     margin-bottom: 10px;
     margin: 1px;
     /* reduce width of player-stats */
-    width: 100px;
-    height: 750px;
+    width: 600px;
+    height: 600px;
     text-align: center;
     /* add space from top  */
     padding-top: 5px;
-    max-width: 33%;
 }
 
+.player-bio{
+    min-width: 515px;
+}
+.percentile-stats{
+    min-width: 445px;
+}
+.event-rink{
+    min-width: 985px;
+}
 .btn-spacer {
     display: block; 
     /* add padding to the top and bottom of the button */
     padding: 1px;
   }
+
+title{
+    fill: #333;
+}
