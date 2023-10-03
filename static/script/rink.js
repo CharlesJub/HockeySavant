@@ -1,9 +1,11 @@
+
 window.onload = function() {
-    copyRinkToCanvas();
+    const canvas = document.getElementById("rink_canvas");
+    copyRinkToCanvas(canvas.width, canvas.height);
     copyGoalToCanvas();
 };
 
-function copyRinkToCanvas(){
+function copyRinkToCanvas(width, height) {
     var image = document.getElementById("rink_image")
     var canvas = document.querySelector("canvas")
 
@@ -12,7 +14,7 @@ function copyRinkToCanvas(){
     ctx.drawImage(
         image, 
         0,0,
-        600, 255
+        width, height
 
     );
 }
@@ -27,12 +29,13 @@ function mapValue(value, old_min, old_max, new_min, new_max) {
 function updateRink(data) {
     const canvas = document.getElementById("rink_canvas");
     const ctx = canvas.getContext("2d");
+    const CIRCLE_RADIUS = 5;
 
     // Call the clearCanvas function whenever you want to clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const newCanvas = canvas.cloneNode(true);
     canvas.parentNode.replaceChild(newCanvas, canvas);
-    copyRinkToCanvas();
+    copyRinkToCanvas(newCanvas.width, newCanvas.height);
     const new_ctx = newCanvas.getContext("2d");
     new_ctx.fillStyle = "green";
     // Set the circle border color and width
@@ -44,16 +47,16 @@ function updateRink(data) {
         const clickX = event.clientX - newCanvas.getBoundingClientRect().left;
         const clickY = event.clientY - newCanvas.getBoundingClientRect().top;
 
-        data.forEach(element => {
-            const x = mapValue(element.coordsX, -100, 100, 0, newCanvas.width);
-            const y = mapValue(element.coordsY, -100, 100, 0, newCanvas.height);
+        data.forEach(dataElement => {
+            const x = mapValue(dataElement.coordsX, -100, 100, 0, newCanvas.width);
+            const y = mapValue(-dataElement.coordsY, -100, 100, 0, newCanvas.height);
 
             // Calculate the distance between the click point and the center of the circle
             const distance = Math.sqrt(Math.pow(clickX - x, 2) + Math.pow(clickY - y, 2));
 
             // Check if the click is within the circle
-            if (distance <= 5) { // 5 is the radius of the circle
-                document.location.href = '/video/' + element.gameId + '-' + element.playId;
+            if (distance <= CIRCLE_RADIUS) { 
+                document.location.href = '/video/' + dataElement.gameId + '-' + dataElement.playId;
             }
         });
     });
@@ -67,17 +70,17 @@ function updateRink(data) {
 
       let hoveredElement = null; // Use a different variable name to avoid confusion
 
-      data.forEach(element => {
-          const x = mapValue(element.coordsX, -100, 100, 0, newCanvas.width);
-          const y = mapValue(element.coordsY, -100, 100, 0, newCanvas.height);
+      data.forEach(dataElement => {
+          const x = mapValue(dataElement.coordsX, -100, 100, 0, newCanvas.width);
+          const y = mapValue(-dataElement.coordsY, -100, 100, 0, newCanvas.height);
           
           // Calculate the distance between the click point and the center of the circle
           const distance = Math.sqrt(Math.pow(clickX - x, 2) + Math.pow(clickY - y, 2));
 
 
           // Check if the click is within the circle
-          if (distance <= 4) { // 5 is the radius of the circle
-            hoveredElement = element;
+          if (distance <= CIRCLE_RADIUS) { 
+            hoveredElement = dataElement;
             
           }
       });
@@ -91,8 +94,10 @@ function updateRink(data) {
 
         const tooltipWidth = tooltip.offsetWidth;
         const tooltipHeight = tooltip.offsetHeight;
-        tooltip.style.left = `${mapValue(hoveredElement.coordsX, -100, 100, 0, newCanvas.width) - (tooltipWidth / 2)}px`;
-        tooltip.style.top = `${mapValue(hoveredElement.coordsY, -100, 100, 0, newCanvas.height) - tooltipHeight - 6}px`;         
+        
+        tooltip.style.left = `${mapValue(hoveredElement.coordsX, -100, 100, 0, canvas.width) - (tooltipWidth/2)}px`;
+        tooltip.style.top = `${mapValue(-hoveredElement.coordsY, -100, 100, 0, canvas.height) - (tooltipHeight/4)}px`;     
+        
         } else {
           // Change Mouse
           newCanvas.style.cursor = "default";
@@ -101,31 +106,75 @@ function updateRink(data) {
         }
     });
 
-    data.forEach(element => {
-        const x = mapValue(element.coordsX, -100, 100, 0, newCanvas.width);
-        const y = mapValue(element.coordsY, -100, 100, 0, newCanvas.height);
+    data.forEach(dataElement => {
+        const x = mapValue(dataElement.coordsX, -100, 100, 0, newCanvas.width);
+        const y = mapValue(-dataElement.coordsY, -100, 100, 0, newCanvas.height);
 
         // Draw the circle with a border
         new_ctx.beginPath();
-        new_ctx.arc(x, y, 5, 0, Math.PI * 2); // Adjust the circle radius (5) as needed
-        new_ctx.fill();
+        new_ctx.arc(x, y, CIRCLE_RADIUS, 0, Math.PI * 2); // Draw the circle
+        new_ctx.fill(); 
         new_ctx.stroke(); // This line adds the border
-        new_ctx.closePath();
+        new_ctx.closePath(); 
     });
 }
 
+function interpolateColor(color1, color2, color3, value) {
+    // Ensure the value is within the range [0, 100]
+    value = Math.min(100, Math.max(0, value));
+  
+    // Calculate the interpolation factor based on the value
+    const interpolationFactor = value / 50;
+  
+    // Interpolate between color1 and color2 if value is less than 50
+    if (value < 50) {
+      const r = Math.round(color1[0] + (color2[0] - color1[0]) * interpolationFactor);
+      const g = Math.round(color1[1] + (color2[1] - color1[1]) * interpolationFactor);
+      const b = Math.round(color1[2] + (color2[2] - color1[2]) * interpolationFactor);
+      return `rgb(${r}, ${g}, ${b})`;
+    } else { // Interpolate between color2 and color3 if value is greater than or equal to 50
+      const r = Math.round(color2[0] + (color3[0] - color2[0]) * (interpolationFactor - 1));
+      const g = Math.round(color2[1] + (color3[1] - color2[1]) * (interpolationFactor - 1));
+      const b = Math.round(color2[2] + (color3[2] - color2[2]) * (interpolationFactor - 1));
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+  }
+
+
 function updatePercentileGraph(data) {
-    // Create bar graph using 
+    var percentileValues = document.querySelectorAll('.percentileValue');
+    percentileValues.forEach(function (percentileValue){
+        percentileValue.querySelector('#percentile-text')
+        const percentile = Math.round(data[percentileValue.id]);
+        const percentileText = percentileValue.querySelector('#percentile-text');
+        const percentile_bar = percentileValue.querySelector('#percentile-bar');
+        const percentile_circle = percentileValue.querySelector('#percentile-circle');
+        const percentile_head = percentileValue.querySelector('#percentile-head');
+        const bar_width = 15 + (percentile * 2.8);
+        percentileText.textContent = percentile; 
+        percentile_bar.style.width = bar_width + 'px';
+        percentile_circle.style.transform = `translate(${105 + bar_width}px, 10px)`
+        // rgb(54, 97, 173), rgb(170, 170, 170), rgb(216, 33, 41)
+        const low = [54, 97, 173];
+        const mid = [170, 170, 170];
+        const high = [216, 33, 41];
+        const interpolatedColor = interpolateColor(low, mid, high, percentile);
+        percentile_bar.style.fill = interpolatedColor;
+        percentile_head.style.fill = interpolatedColor;
+    });
+    
+
 }
 function copyGoalToCanvas(){
     var canvas = document.querySelector("canvas");
     var goalMarks = document.querySelectorAll("#goal_mark");
+    
 
 
     var ctx = canvas.getContext("2d");
 
     // Loop through the goal marks and draw circles on the canvas
-    goalMarks.forEach(function (goalMark, index) {
+    goalMarks.forEach(function (goalMark) {
         var x = parseFloat(goalMark.getAttribute("x")); // Parse x coordinate as a float
         var y = parseFloat(goalMark.getAttribute("y")); // Parse y coordinate as a float
         var gameId = goalMark.getAttribute("game-id"); // Parse x coordinate as a float
@@ -144,7 +193,7 @@ function copyGoalToCanvas(){
 
         // Draw the circle with a border
         ctx.beginPath();
-        ctx.arc(x, y, 5, 0, Math.PI * 2); // Adjust the circle radius (5) as needed
+        ctx.arc(x, y, CIRCLE_RADIUS, 0, Math.PI * 2); // Draw the circle
         ctx.fill();
         ctx.stroke(); // This line adds the border
         ctx.closePath();
@@ -158,7 +207,7 @@ function copyGoalToCanvas(){
             var distance = Math.sqrt(Math.pow(clickX - x, 2) + Math.pow(clickY - y, 2));
             
             // Check if the click is within the circle
-            if (distance <= 5) { // 5 is the radius of the circle
+            if (distance <= CIRCLE_RADIUS) {
                 document.location.href = '/video/'+gameId+'-'+goalId;
             }
         });
@@ -187,7 +236,7 @@ jQuery(document).ready(function($) {
             // Handle the data received from the server
             // Update the HTML on the /players page with the data
             updateRink(data[0]);      
-            // updatePercentileGraph(data[1]);
+            updatePercentileGraph(data[1][0]);
           },
           error: function(error) {
             console.error('Error fetching data: ', error);
@@ -213,8 +262,8 @@ jQuery(document).ready(function($) {
             success: function(data) {
             // Handle the data received from the server
             // Update the HTML on the /players page with the data
-            updateRink(data);       
-            // updatePercentileGraph(data[1]);
+            updateRink(data[0]);       
+            updatePercentileGraph(data[1][0]);
 
             },
             error: function(error) {
