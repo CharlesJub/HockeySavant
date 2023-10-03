@@ -210,6 +210,9 @@ def video(play_id):
     else:
         return render_template('video.html', goal_data=goal_data)
     
+@app.route("/about")
+def about():
+    return render_template('about.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
