@@ -1,5 +1,26 @@
 jQuery.noConflict();
 jQuery(document).ready(function($) {
+  if ($('#player-table').length){
+    $.ajax({
+      url: '/players_data',
+      type: 'GET',
+      dataType: 'json',
+      data: {
+        position: $('#position').val(),
+        season: $('#season').val(),
+        min_played_toi: $('#min-played-toi').val()
+      },
+      success: function(data) {
+        // Handle the data received from the server
+        // Update the HTML on the /players page with the data
+        updateTable(data);          
+      },
+      error: function(error) {
+        console.error('Error fetching data: ', error);
+      }
+    });
+  }
+  
   $('.stats-filter').change(function() {
     // Use AJAX to fetch data from the server
     $.ajax({
