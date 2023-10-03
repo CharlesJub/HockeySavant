@@ -20,7 +20,7 @@
 
 </head>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="#">HockeySavant</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -40,7 +40,7 @@
             <a class="nav-link disabled" href="#">Prospects</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" href="#">About</a>
+            <a class="nav-link" href="/about">About</a>
         </li>
       </ul>
     </div>
@@ -48,14 +48,14 @@
 
 
 <body>
-  <div class="container" style="margin-bottom: 20px; max-width: 80%;">
+  <div class="container" style="margin-bottom: 20px; max-width: 60%;">
       <div class="row">
-          <div class="player-stats col-sm">
+          <div class="player-stats player-bio col-sm">
               <!-- Content for the first pane -->
               <div class="title">{{ player_data[1] }}</div>
               <img src="https://assets.nhle.com/mugs/nhl/latest/{{ player_data[0] }}.png" alt="Picture of {{ player_data[1] }}">
               <div class="player_info" id="{{ player_data[0]}}">{{ player_data[8] }} | Shoots: {{ player_data[6] }} | {{ player_data[4] }} {{ player_data[5] }}LBS | Age: {{ player_data[2] }} | Nationality: {{ player_data[3] }}</div>
-              <table class="table table-striped" style="width:20%";>
+              <table class="table table-striped" style="width:15%";>
                   <tr>
                       <th>Season</th>
                       <th>GP</th>
@@ -82,61 +82,281 @@
               
       
           </div>
-          <div class="player-stats col-sm">
-            <g>2023 Player Percentile Rankings</g>
+          <div class="player-stats percentile-stats col-sm">
+            <div class="title">2023 Player Percentile Rankings</div>
               <!-- Content for the second pane -->
-            <g class="group offenceValue"></g>
-              <svg>
-                <text x="20" y="30" font-family="Arial" font-size="20" fill="black">
-                  Hello, <tspan fill="red">SVG</tspan>!
-                </text>
-                <!-- <rect x="0" y="0" width="100%" height="100%" fill="blue" /> -->
-              </svg>
-            <g class="group defenseValue"></g>
-            <g class="group deployment"></g>
-            <g class="group misc"></g>
+            <svg style="width: 100%; height: 100%;" id="player_stats_chart">
+              <g class="group offenceValue" transform="translate(0, 0)">
+                <!-- Title -->
+                <g class="percentile_title" transform="translate(0, 20)">
+                  <text x="10%" y="0" text-anchor="Left" font-weight="bold" fill="black" font-size="20">Offense</text>
+                  <rect x="0" y="3" width="100%" height="2" fill="grey"/>
+                </g>
+                <!-- Percentile markers -->
+                <g transform="translate(100, 25)">
+                  <g class="percentile_marker" transform="translate(5, 0)">
+                    <text x="13" y="10"  text-anchor="middle" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">Poor</text>
+                    <path d="M13,18L10,24L16,24" fill="rgb(54, 97, 173)"/>
+                    </g>
+                  <g class="percentile_marker" transform="translate(140, 0)">
+                    <text x="13" y="10"  text-anchor="middle" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">Average</text>
+                    <path d="M13,18L10,24L16,24" fill="rgb(170, 170, 170)"/>
+                    </g>
+                  <g class="percentile_marker" transform="translate(275, 0)">
+                    <text x="13" y="10"  text-anchor="middle" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">Great</text>
+                    <path d="M13,18L10,24L16,24" fill="rgb(216, 33, 41)"/>
+                    </g>
+                </g>
+                <!-- ixG -->
+                <g class="percentileValue" transform="translate(0, 50)" id="ALL_ixG_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">ixG</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="offenseBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+                <!-- xGF -->
+                <g class="percentileValue" transform="translate(0, 75)" id="ALL_xGF_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">xGF</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="offenseBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+                <!-- EV xGF -->
+                <g class="percentileValue" transform="translate(0, 100)" id="EV_xGF_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">EV xGF</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="offenseBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                    </g>
+                  </g>
+                  <!-- PP xGF -->
+                  <g class="percentileValue" transform="translate(0, 125)" id="PP_xGF_percentile">
+                    <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">PP xGF</text>
+                    <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                    <g class="offenseBar" transform="translate(120, 10)" id="percentile-circle">
+                      <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                      <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                      </g>
+                    </g>
+                  <!-- Goals -->
+                  <g class="percentileValue" transform="translate(0, 150)" id="goals_above_expected_percentile">
+                    <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">Goals Above Expected</text>
+                    <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                    <g class="offenseBar" transform="translate(120, 10)" id="percentile-circle">
+                      <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                      <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                      </g>
+                    </g>
+                  
+              </g>
+              <g class="group defenseValue" transform="translate(0, 175)">
+                <!-- Title -->
+                <g class="percentile_title" transform="translate(0, 20)">
+                  <text x="10%" y="0" text-anchor="Left" font-weight="bold" fill="black" font-size="20">Defense</text>
+                  <rect x="0" y="3" width="100%" height="2" fill="grey"/>
+                <!-- xGA -->
+                <g class="percentileValue" transform="translate(0, 15)" id="ALL_xGA_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">xGA</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="percentileBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+                <!-- EV xGA -->
+                <g class="percentileValue" transform="translate(0, 40)" id="EV_xGA_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">EV xGA</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="percentileBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+                <!-- SH xGA -->
+                <g class="percentileValue" transform="translate(0, 65)" id="SH_xGA_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">SH xGA</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="percentileBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+                <!-- EV GA -->
+                <g class="percentileValue" transform="translate(0, 90)" id="ev_goals_against_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">EV GA</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="percentileBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+                </g>
+
+              </g>
+              <g class="group deployment" transform="translate(0, 310)">
+                <g class="percentile_title" transform="translate(0, 20)">
+                  <text x="10%" y="0" text-anchor="Left" font-weight="bold" fill="black" font-size="20">Deployment</text>
+                  <rect x="0" y="3" width="100%" height="2" fill="grey"/>
+                <!-- EV TOI -->
+                <g class="percentileValue" transform="translate(0, 15)" id="EV_TOI_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">EV TOI</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="percentileBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+                <!-- PP TOI -->
+                <g class="percentileValue" transform="translate(0, 40)" id="PP_TOI_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">PP TOI</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="percentileBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+                <!-- SH TOI -->
+                <g class="percentileValue" transform="translate(0, 65)" id="SH_TOI_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">SH TOI</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="percentileBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+              </g>
+              </g>
+              <g class="group misc" transform="translate(0, 420)">
+                <g class="percentile_title" transform="translate(0, 20)">
+                  <text x="10%" y="0" text-anchor="Left" font-weight="bold" fill="black" font-size="20">Misc</text>
+                  <rect x="0" y="3" width="100%" height="2" fill="grey"/>
+                <!-- Pen Taken -->
+                <g class="percentileValue" transform="translate(0, 15)" id="penalties_taken_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">Penalties Taken</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="percentileBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+                <!-- Pen drawn -->
+                <g class="percentileValue" transform="translate(0, 40)" id="penalties_drawn_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">Penalties Drawn</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="percentileBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+                <!-- SH TOI -->
+                <g class="percentileValue" transform="translate(0, 65)" id="faceoff_differential_percentile">
+                  <text x="100" y="10" text-anchor="end" dominant-baseline="central" alignment-baseline="central" fill="black" font-size="10">Faceoff Differential</text>
+                  <rect x="105" y="0" width="0" height="20" fill="white" id="percentile-bar" />
+                  <rect x="118" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="253" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <rect x="388" y="0" width="1" height="20" fill="white" opacity=".5"/>
+                  <g class="percentileBar" transform="translate(120, 10)" id="percentile-circle">
+                    <circle cx="0" cy="0" r="12" fill="white" stroke="white" stroke-width="2" id="percentile-head"/>
+                    <text x="0" y="0" text-anchor="Middle" fill="white" font-weight="bold" font-size="12" dominant-baseline="central" alignment-baseline="central" id="percentile-text">0</text>
+                  </g>
+                </g>
+              </g>
+                
+              </g>
+            </svg>
+            
               
           </div>
-          <div class="player-stats col-sm">
-              <!-- Content for the third pane -->
-              <img id='rink_image' src="{{ url_for('static', filename='hockey_rink_clear.jpg')}}" alt="" hidden>
-              <div id="tooltip" style="position: absolute; display: none;"></div>
-              <canvas id="rink_canvas" width="600" height="255"></canvas>
-              <div class="btn-spacer">
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-secondary video-filter event-filter active" name="goals">
-                  <input type="radio" autocomplete="off" checked> Goals
-                </label>
-                <label class="btn btn-secondary video-filter event-filter" name="assists">
-                  <input type="radio" autocomplete="off"> Assists
-                </label>
-                <label class="btn btn-secondary video-filter event-filter" name="goals_for">
-                  <input type="radio" autocomplete="off"> Goals For
-                </label>
-                <label class="btn btn-secondary video-filter event-filter" name="goals_against">
-                    <input type="radio" autocomplete="off"> Goals Against
-                  </label>
-                  </div>
-                </div>
-              <div class="btn-spacer">
-                <div class="btn-group btn-group-toggle " data-toggle="buttons">
-                  <label class="btn btn-secondary video-filter strength-filter active" name="all_events">
-                    <input type="radio" autocomplete="off" checked> All
-                  </label>
-                  <label class="btn btn-secondary video-filter strength-filter" name="ev_events">
-                    <input type="radio" autocomplete="off"> Even Strength
-                  </label>
-                  <label class="btn btn-secondary video-filter strength-filter" name="pp_events">
-                    <input type="radio" autocomplete="off"> Power-play
-                  </label>
-                  <label class="btn btn-secondary video-filter strength-filter" name="sh_events">
-                      <input type="radio" autocomplete="off"> Shorthanded
-                    </label>
-                </div>
+        </div>
+      <div class="row">
+        <div class="player-stats event-rink col-sm">
+          <div class="title">2023 Event Locations</div>
+          <!-- Content for the third pane -->
+          <img id='rink_image' src="{{ url_for('static', filename='hockey_rink_clear.jpg')}}" alt="" hidden>
+          <div id="tooltip" style="position: absolute; display: none;"></div>
+          <canvas id="rink_canvas" width="900" height="382.5"></canvas>
+          <div class="btn-spacer">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-secondary video-filter event-filter active" name="goals">
+              <input type="radio" autocomplete="off" checked> Goals
+            </label>
+            <label class="btn btn-secondary video-filter event-filter" name="assists">
+              <input type="radio" autocomplete="off"> Assists
+            </label>
+            <label class="btn btn-secondary video-filter event-filter" name="goals_for">
+              <input type="radio" autocomplete="off"> Goals For
+            </label>
+            <label class="btn btn-secondary video-filter event-filter" name="goals_against">
+                <input type="radio" autocomplete="off"> Goals Against
+              </label>
               </div>
-              
+            </div>
+          <div class="btn-spacer">
+            <div class="btn-group btn-group-toggle " data-toggle="buttons">
+              <label class="btn btn-secondary video-filter strength-filter active" name="all_events">
+                <input type="radio" autocomplete="off" checked> All
+              </label>
+              <label class="btn btn-secondary video-filter strength-filter" name="ev_events">
+                <input type="radio" autocomplete="off"> Even Strength
+              </label>
+              <label class="btn btn-secondary video-filter strength-filter" name="pp_events">
+                <input type="radio" autocomplete="off"> Power-play
+              </label>
+              <label class="btn btn-secondary video-filter strength-filter" name="sh_events">
+                  <input type="radio" autocomplete="off"> Shorthanded
+                </label>
+            </div>
           </div>
+          
       </div>
+        </div>
   </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
