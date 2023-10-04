@@ -1,17 +1,10 @@
 from flask import Flask, render_template, request, jsonify
-import creds
-import psycopg2
+import creds as creds
 from datetime import datetime
+import sqlite3
 
 app = Flask(__name__)
 
-db_settings = {
-    'dbname': creds.DB_NAME,
-    'user': creds.DB_USER,
-    'password': creds.DB_PASS,
-    'host': creds.DB_HOST,
-    'port': creds.DB_PORT,
-}
 
 POSITIONS = {
     "Skater": ('C', 'L', 'R', 'D'),
@@ -20,20 +13,18 @@ POSITIONS = {
     "Goalie": None
 }
 
+def get_db_connection():
+    conn = sqlite3.connect('hockeysavant_app/hockeysavant.db')
+    conn.row_factory = sqlite3.Row  # This allows accessing columns by name
+    return conn
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
 @app.route('/players', methods=['GET'])
-def players():
-
-    # Establish a connection to the PostgreSQL database
-    conn = psycopg2.connect(**db_settings)
-    cursor = conn.cursor()
-
-    # Execute a query to retrieve data from the database
-    
+def players():    
 
     query = """
     SELECT players.id, players."imageLink", players."lastFirstName", skater_stats.season, players."primaryPosition"
@@ -41,15 +32,17 @@ def players():
     INNER JOIN skater_stats ON players.id = skater_stats.id
     WHERE skater_stats.season = 20222023
     """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
     cursor.execute(query)
     # Fetch data from the cursor
     data = list(cursor.fetchall())
     for row_idx in range(len(data)):
         data[row_idx] = list(data[row_idx])
         data[row_idx][3] = str(data[row_idx][3])[:4]
-        
 
-    # Close the database connection
+    cursor.close()
     conn.close()
 
     return render_template('players.html', data=data)
@@ -89,23 +82,24 @@ def players_data():
 
     query = build_player_query(table_name, season, min_played_toi, position_query)
     
-    # Establish a connection to the PostgreSQL database (make sure to import psycopg2 and db_settings)
-    conn = psycopg2.connect(**db_settings)
+    conn = get_db_connection()
     cursor = conn.cursor()
+
     cursor.execute(query)
     columns = [column[0] for column in cursor.description]
     results = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-    # Close the database connection
+    cursor.close()
     conn.close()
 
     return jsonify(results)
 
 @app.route('/player/<player_id>')
 def player(player_id): 
-    conn = psycopg2.connect(**db_settings)
-    cursor = conn.cursor()
 
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
     # Execute a query to retrieve data from the database
     cursor.execute(f'SELECT * FROM "players" WHERE id = {player_id}')
 
@@ -122,14 +116,32 @@ def player(player_id):
         cursor.execute(f'SELECT * FROM "goalie_stats" WHERE id={player_id}')
     player_stats = cursor.fetchall()
 
-    
+    cursor.close()
+    conn.close()
     
     return render_template('player.html', player_data=player_data, player_stats=player_stats)
 
+@app.route('/skater_percentile/<player_id>')
+def skater_percentile(player_id):
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(f"""SELECT * 
+                       FROM "percentiles"
+                       WHERE "id" = '{player_id}'
+                       AND "season" = '20222023'
+                    """)
+    percentile_column_names = [description[0] for description in cursor.description]
+    percentile_stats = [dict(zip(percentile_column_names, row)) for row in cursor.fetchall()]
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(percentile_stats)
+
 @app.route('/goal_data/<player_id>')
 def goal_data(player_id):
-    conn = psycopg2.connect(**db_settings)
-    cursor = conn.cursor()
     
     highlight_type = request.args.get('highlight')
     strength_type = request.args.get('strength')
@@ -165,34 +177,26 @@ def goal_data(player_id):
                     FROM play_by_play
                     WHERE {strength_type_query}
                     AND {event_type_query}"""
-
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
     # Execute a query to retrieve data from the database
     cursor.execute(full_query)
     column_names = [description[0] for description in cursor.description]
     results = [dict(zip(column_names, row)) for row in cursor.fetchall()]
-    
-    cursor.execute(f"""SELECT * 
-                       FROM "percentiles"
-                       WHERE "id" = '{player_id}'
-                       AND "season" = '20222023'
-                    """)
-    percentile_column_names = [description[0] for description in cursor.description]
-    percentile_stats = [dict(zip(percentile_column_names, row)) for row in cursor.fetchall()]
 
-    # Close the database connection
     cursor.close()
     conn.close()
-    
 
-    return jsonify((results, percentile_stats))
+    return jsonify((results))
 
 @app.route("/video/<play_id>")
 def video(play_id):
     game_id, goal_id = play_id.split("-")
-    
-    
-    conn = psycopg2.connect(**db_settings)
+
+    conn = get_db_connection()
     cursor = conn.cursor()
+
     cursor.execute(f"""SELECT * 
                     FROM video_links
                     WHERE game_id = {game_id}
@@ -203,6 +207,9 @@ def video(play_id):
                     WHERE "gameId" = {game_id}
                     AND "playId" = '{goal_id}'""")
     goal_data = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
     
     if video_link != None:
         return render_template('video.html', video_link=video_link, goal_data=goal_data)
@@ -212,6 +219,8 @@ def video(play_id):
 @app.route("/about")
 def about():
     return render_template('about.html')
+
+
 
 if __name__ == '__main__':
     app.run()
