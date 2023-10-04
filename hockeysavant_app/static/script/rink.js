@@ -219,11 +219,26 @@ function copyGoalToCanvas(){
 // TODO - add season filter
 // TODO - add en filter 
 jQuery(document).ready(function($) {
+    const player_id = $('.player_info').attr('id');
+    // Percentile Stuff
+    $.ajax({
+        url: '/skater_percentile/' + player_id,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+        // Handle the data received from the server
+        // Update the HTML on the /players page with the data
+        updatePercentileGraph(data);       
+        },
+        error: function(error) {
+        console.error('Error fetching percentile data: ', error);
+        }
+    });
     // Get rink points on load:
     setTimeout(function() {
-        var strength_type = $('.event-filter.active').attr('name');
-        var highlight_type = $('.strength-filter.active').attr('name');
-        var player_id = $('.player_info').attr('id');
+        const strength_type = $('.event-filter.active').attr('name');
+        const highlight_type = $('.strength-filter.active').attr('name');
+
         $.ajax({
           url: '/goal_data/' + player_id,
           type: 'GET',
@@ -235,11 +250,10 @@ jQuery(document).ready(function($) {
           success: function(data) {
             // Handle the data received from the server
             // Update the HTML on the /players page with the data
-            updateRink(data[0]);      
-            updatePercentileGraph(data[1][0]);
+            updateRink(data);      
           },
           error: function(error) {
-            console.error('Error fetching data: ', error);
+            console.error('Error fetching goal data: ', error);
           }
         });
     }, 1);
@@ -262,14 +276,13 @@ jQuery(document).ready(function($) {
             success: function(data) {
             // Handle the data received from the server
             // Update the HTML on the /players page with the data
-            updateRink(data[0]);       
-            updatePercentileGraph(data[1][0]);
-
+            updateRink(data);       
             },
             error: function(error) {
             console.error('Error fetching data: ', error);
             }
         });
+
         }, 1);
     });
 });
