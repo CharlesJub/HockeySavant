@@ -58,3 +58,12 @@ body{
     /* add padding to the top and bottom of the button */
     padding: 1px;
   }
+
+.player-search{
+    margin-left: 2px;
+
+}
+
+#player-table{
+    margin-top: 5px;
+}

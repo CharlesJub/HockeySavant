@@ -1,5 +1,8 @@
 jQuery.noConflict();
 jQuery(document).ready(function($) {
+  if ($('#player-search').length){
+    document.getElementById("player-search").addEventListener("keyup", filterTableSearch);
+  }
   if ($('#player-table').length){
     $.ajax({
       url: '/players_data',
@@ -35,8 +38,8 @@ jQuery(document).ready(function($) {
       success: function(data) {
         // Handle the data received from the server
         // Update the HTML on the /players page with the data
-        console.log(data)
-        updateTable(data);          
+        updateTable(data);        
+        filterTableSearch;  
       },
       error: function(error) {
         console.error('Error fetching data: ', error);
@@ -46,7 +49,6 @@ jQuery(document).ready(function($) {
   
   function updateTable(data) {
     var table = $('#player-table tbody');
-    console.log(table)
     table.empty(); // Clear existing data
 
     data.forEach(function(player) {
@@ -58,5 +60,32 @@ jQuery(document).ready(function($) {
     });
   }
 });
+
+
+
+function filterTableSearch() {
+  const input = this.value.toLowerCase();
+  const table = document.getElementById("player-table");
+  const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+  for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const cells = row.getElementsByTagName("td");
+      let found = false;
+
+      for (let j = 0; j < cells.length; j++) {
+          const cell = cells[j];
+          if (cell.innerText.toLowerCase().indexOf(input) > -1) {
+              found = true;
+              break;
+          }
+      }
+
+      if (found) {
+          row.style.display = "";
+      } else {
+          row.style.display = "none";
+      }
+  }
+}
 
 
