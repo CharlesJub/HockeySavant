@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify
-import creds as creds
 from datetime import datetime
 import sqlite3
 
@@ -219,7 +218,6 @@ def video(play_id):
 @app.route("/about")
 def about():
     return render_template('about.html')
-
 
 
 if __name__ == '__main__':
