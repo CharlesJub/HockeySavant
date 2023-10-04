@@ -13,6 +13,7 @@ POSITIONS = {
 }
 
 def get_db_connection():
+    # '/home/CharlieJubera/HockeySavant/hockeysavant_app/hockeysavant.db' for server
     conn = sqlite3.connect('hockeysavant_app/hockeysavant.db')
     conn.row_factory = sqlite3.Row  # This allows accessing columns by name
     return conn
