@@ -176,7 +176,8 @@ def goal_data(player_id):
     full_query = f"""SELECT *
                     FROM play_by_play
                     WHERE {strength_type_query}
-                    AND {event_type_query}"""
+                    AND {event_type_query}
+                    AND "season"=20222023"""
     
     conn = get_db_connection()
     cursor = conn.cursor()
