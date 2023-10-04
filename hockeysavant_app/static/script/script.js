@@ -35,6 +35,7 @@ jQuery(document).ready(function($) {
       success: function(data) {
         // Handle the data received from the server
         // Update the HTML on the /players page with the data
+        console.log(data)
         updateTable(data);          
       },
       error: function(error) {
@@ -44,12 +45,13 @@ jQuery(document).ready(function($) {
   });
   
   function updateTable(data) {
-    var table = $('#table tbody');
+    var table = $('#player-table tbody');
+    console.log(table)
     table.empty(); // Clear existing data
 
     data.forEach(function(player) {
       var newRow = '<tr>';
-      newRow += '<td><img class="player-head" src="https://assets.nhle.com/mugs/nhl/latest/' + player.id + '.png" loading="eager"><a class="player-link" href="/player/' + player.id + '">' + player.name + '</a></td>';
+      newRow += '<td><img class="player-head" src="https://assets.nhle.com/mugs/nhl/latest/' + player.id + '.png" loading="eager"><a class="player-link" href="/player/' + player.id + '">' + player.lastFirstName + '</a></td>';
       newRow += '<td>' + String(player.season).substring(0,4) + '</td>';
       newRow += '</tr>';
       table.append(newRow);

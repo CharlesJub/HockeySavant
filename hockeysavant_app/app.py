@@ -48,11 +48,15 @@ def players():
     return render_template('players.html', data=data)
 
 def build_player_query(table_name, season, min_played_toi, position_query):
-    time_as_seconds_query = f'CAST(LEFT({table_name}."timeOnIce", POSITION(\':\' IN {table_name}."timeOnIce") - 1) AS INT)*60 + CAST(SUBSTRING({table_name}."timeOnIce", POSITION(\':\' IN {table_name}."timeOnIce")+1, LENGTH({table_name}."timeOnIce")) AS INT) AS toi_seconds'
+    time_as_seconds_query = f"""
+        CAST(SUBSTR({table_name}."timeOnIce", 1, INSTR({table_name}."timeOnIce", ':') - 1) AS INTEGER) * 60
+        + CAST(SUBSTR({table_name}."timeOnIce", INSTR({table_name}."timeOnIce", ':') + 1) AS INTEGER) AS toi_seconds
+    """
     
     # Build the SQL query
     query = f"""
-        SELECT * FROM (
+        SELECT *
+        FROM (
             SELECT *, {time_as_seconds_query}
             FROM players
             INNER JOIN {table_name} ON {table_name}.id = players.id
@@ -84,11 +88,10 @@ def players_data():
     
     conn = get_db_connection()
     cursor = conn.cursor()
-
     cursor.execute(query)
     columns = [column[0] for column in cursor.description]
     results = [dict(zip(columns, row)) for row in cursor.fetchall()]
-
+    
     cursor.close()
     conn.close()
 
@@ -223,5 +226,5 @@ def about():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
  
