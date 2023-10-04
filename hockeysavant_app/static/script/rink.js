@@ -142,10 +142,10 @@ function interpolateColor(color1, color2, color3, value) {
 
 
 function updatePercentileGraph(data) {
-    var percentileValues = document.querySelectorAll('.percentileValue');
+    const percentileValues = document.querySelectorAll('.percentileValue');
+
     percentileValues.forEach(function (percentileValue){
-        percentileValue.querySelector('#percentile-text')
-        const percentile = Math.round(data[percentileValue.id]);
+        const percentile = Math.round(data[0][percentileValue.id]);
         const percentileText = percentileValue.querySelector('#percentile-text');
         const percentile_bar = percentileValue.querySelector('#percentile-bar');
         const percentile_circle = percentileValue.querySelector('#percentile-circle');
@@ -161,6 +161,7 @@ function updatePercentileGraph(data) {
         const interpolatedColor = interpolateColor(low, mid, high, percentile);
         percentile_bar.style.fill = interpolatedColor;
         percentile_head.style.fill = interpolatedColor;
+        
     });
     
 
@@ -219,23 +220,12 @@ function copyGoalToCanvas(){
 // TODO - add season filter
 // TODO - add en filter 
 jQuery(document).ready(function($) {
-    const player_id = $('.player_info').attr('id');
+    
     // Percentile Stuff
-    $.ajax({
-        url: '/skater_percentile/' + player_id,
-        type: 'GET',
-        dataType: 'json',
-        success: function(data) {
-        // Handle the data received from the server
-        // Update the HTML on the /players page with the data
-        updatePercentileGraph(data);       
-        },
-        error: function(error) {
-        console.error('Error fetching percentile data: ', error);
-        }
-    });
+    
     // Get rink points on load:
     setTimeout(function() {
+        const player_id = $('.player_info').attr('id');
         const strength_type = $('.event-filter.active').attr('name');
         const highlight_type = $('.strength-filter.active').attr('name');
 
@@ -255,6 +245,20 @@ jQuery(document).ready(function($) {
           error: function(error) {
             console.error('Error fetching goal data: ', error);
           }
+        });
+
+        $.ajax({
+            url: '/skater_percentile/' + player_id,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+            // Handle the data received from the server
+            // Update the HTML on the /players page with the data
+            updatePercentileGraph(data);
+            },
+            error: function(error) {
+            console.error('Error fetching percentile data: ', error);
+            }
         });
     }, 1);
     
