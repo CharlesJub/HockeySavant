@@ -124,10 +124,12 @@ def player(player_id):
         cursor.execute(f'SELECT * FROM "goalie_stats" WHERE id={player_id}')
     player_stats = cursor.fetchall()
 
+    resp = requests.get(f"https://api-web.nhle.com/v1/player/{player_id}/landing")
+    player_json = resp.json()
     cursor.close()
     conn.close()
     
-    return render_template('player.html', player_data=player_data, player_stats=player_stats)
+    return render_template('player.html', player_data=player_data, player_stats=player_stats, player_info=player_json)
 
 @app.route('/skater_percentile/<player_id>')
 def skater_percentile(player_id):

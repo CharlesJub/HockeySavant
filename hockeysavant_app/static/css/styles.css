@@ -2,6 +2,8 @@ body{
     background: #eff4fa
 }
 
+
+
 .player-head{
     width: 30px; /* Adjust the width and height to your desired circle size */
     height: 30px;
@@ -41,18 +43,23 @@ body{
     height: 600px;
     text-align: center;
     /* add space from top  */
-    padding-top: 5px;
 }
 
-.player-bio{
+.player-stats#player-info{
+    padding: 0;
+    max-width: 50%;
     min-width: 515px;
 }
-.percentile-stats{
-    min-width: 445px;
+.player-stats#percentile-stats{
+    padding: 0;
+    max-width: 50%;
+    min-width: 515px;
 }
-.event-rink{
+.player-stats#event-rink{
     min-width: 985px;
+
 }
+
 .btn-spacer {
     display: block; 
     /* add padding to the top and bottom of the button */
@@ -99,4 +106,55 @@ body{
     text-align: center;
     margin-top: 5px;
     font-size: 16px;
+}
+
+#player-mug{
+    height: 12%;
+    border-radius: 50%;
+    border: 1px solid #979494;
+    background-color: #82c7cc;
+    position: absolute;
+    top: 160px;
+    left: 50%; 
+    transform: translate(-50%, 0);
+    
+}
+
+
+#player-hero{
+    width: 100%;
+    height: auto; /* Maintain the image's aspect ratio */
+    display: block; /* Remove any extra spacing around the image */
+    margin: 0 auto; /* Center horizontally within the container */    
+}
+
+.image-container {
+    width: 100%; /* Set the desired width */
+    height: 200px; /* Set the desired height */
+    overflow: hidden; /* Hide anything that goes beyond the container's boundaries */
+    position: relative; /* To position pseudo-elements */
+  }
+
+.player-title{
+    position: absolute;
+    left: 50%; 
+    transform: translate(-50%, 0);
+    top: 235px;
+    font-weight: bold;
+    font-size: 20px;
+}
+.player_info{
+    position: absolute;
+    left: 50%; 
+    transform: translate(-50%, 0);
+    top: 260px;
+    width: 100%;
+}
+
+#recent-seasons{
+    position: absolute;
+    left: 50%; 
+    transform: translate(-50%, 0);
+    top: 300px;
+    width: 100%;
 }
