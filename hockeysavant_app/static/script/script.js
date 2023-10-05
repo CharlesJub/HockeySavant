@@ -1,5 +1,10 @@
 jQuery.noConflict();
 jQuery(document).ready(function($) {
+  // Check if game-start exists before running set date
+  if ($('.game-start').length) {
+    setTime();
+  }
+
   if ($('#player-search').length){
     document.getElementById("player-search").addEventListener("keyup", filterTableSearch);
   }
@@ -89,3 +94,20 @@ function filterTableSearch() {
 }
 
 
+
+
+function setTime() {
+  const datetimeElements = document.getElementsByClassName("game-start");
+
+  // Convert the NodeList to an array using Array.from()
+  const datetimeArray = Array.from(datetimeElements);
+
+  datetimeArray.forEach(function(dateElement) {
+    const dateText = dateElement.innerText;
+    const dateObject = new Date(dateText);
+    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+    const formatedTime = dateObject.toLocaleTimeString(undefined, options);
+    // Display the formatted time
+    dateElement.innerText = formatedTime;
+  });
+}
