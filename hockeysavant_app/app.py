@@ -24,7 +24,7 @@ def get_db_connection():
 def index():
     resp = requests.get('https://api-web.nhle.com/v1/schedule/now')
     json = resp.json()
-    todays_date = str((datetime.today() - timedelta(hours=4)).date())
+    todays_date = str((datetime.today() - timedelta(hours=1)).date())
     return render_template('index.html', games_data=json, todays_date=todays_date)
 
 

@@ -48,25 +48,31 @@
     </div>
   </nav>
   <body>
+    <!-- {{games_data}} -->
     <div class="container" id="today-games">
-      {% if games_data.gameWeek[0].date == todays_date %}
-      {% for game in games_data.gameWeek[0].games %}
-        <div class="game">
-          <div class="game-info">
-            <div class="game-state">{{ game.gameState }}</div> 
-            <div class="game-start">{{ game.startTimeUTC }}</div>
-          </div>
-          <div class="home-team">
-            <div class="home-logo"><img class="team-logo" src="{{ game.homeTeam.logo }}"></div>
-            <div class="team-score">{{ game.homeTeam.score }} </div>
-          </div>
-          <div class="away-team">
-            <div class="away-logo"><img class="team-logo" src="{{ game.awayTeam.logo }}"></div>
-            <div class="team-score">{{ game.awayTeam.score }} </div>
-          </div>
-        </div>
+      {% for game_dates in games_data.gameWeek %}
+        {% if game_dates.date == todays_date %}
+          {% for game in game_dates.games %}
+            <div class="game">
+              <div class="game-info">
+                <div class="game-start" date="{{ game.startTimeUTC }}"></div>
+                {% if game.gameState in ('OVER', 'FINAL', 'LIVE') %}
+                  <div class="game-state">{{ game.gameState }}</div> 
+                {% endif %}
+              </div>
+              <div class="home-team">
+                <div class="home-logo"><img class="team-logo" src="{{ game.homeTeam.logo }}"></div>
+                <div class="team-score">{{ game.homeTeam.score }} </div>
+              </div>
+              <div class="away-team">
+                <div class="away-logo"><img class="team-logo" src="{{ game.awayTeam.logo }}"></div>
+                <div class="team-score">{{ game.awayTeam.score }} </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
       {% endfor %}
-    {% endif %}
+      
     </div>
     
   </body>

@@ -1,4 +1,5 @@
 jQuery.noConflict();
+
 jQuery(document).ready(function($) {
   // Check if game-start exists before running set date
   if ($('.game-start').length) {
@@ -103,7 +104,7 @@ function setTime() {
   const datetimeArray = Array.from(datetimeElements);
 
   datetimeArray.forEach(function(dateElement) {
-    const dateText = dateElement.innerText;
+    const dateText = dateElement.attributes.date.value;
     const dateObject = new Date(dateText);
     const options = { hour: 'numeric', minute: 'numeric', hour12: true };
     const formatedTime = dateObject.toLocaleTimeString(undefined, options);
