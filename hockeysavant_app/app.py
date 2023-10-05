@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
 import sqlite3
+import requests
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -20,7 +22,10 @@ def get_db_connection():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    resp = requests.get('https://api-web.nhle.com/v1/schedule/now')
+    json = resp.json()
+    todays_date = str((datetime.today() - timedelta(hours=4)).date())
+    return render_template('index.html', games_data=json, todays_date=todays_date)
 
 
 @app.route('/players', methods=['GET'])

@@ -67,3 +67,36 @@ body{
 #player-table{
     margin-top: 5px;
 }
+
+.game{
+    border: 1px solid #000;
+    margin-left: 2%;
+    margin-bottom: 1%;
+    width: 25%;
+    height: 200px;
+    float: left;
+    min-width: 275.5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;   
+}
+
+.game-info{
+    text-align: center;
+    width: 100%;
+}
+
+
+.home-team,
+.away-team{
+    width: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.team-score{
+    text-align: center;
+    margin-top: 5px;
+    font-size: 16px;
+}
