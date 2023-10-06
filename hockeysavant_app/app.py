@@ -14,6 +14,45 @@ POSITIONS = {
     "Goalie": None
 }
 
+NHL_TEAMS = {
+    'ANA': 'Anaheim Ducks',
+    'ARI': 'Arizona Coyotes',
+    'BOS': 'Boston Bruins',
+    'BUF': 'Buffalo Sabres',
+    'CGY': 'Calgary Flames',
+    'CAR': 'Carolina Hurricanes',
+    'CHI': 'Chicago Blackhawks',
+    'COL': 'Colorado Avalanche',
+    'CBJ': 'Columbus Blue Jackets',
+    'DAL': 'Dallas Stars',
+    'DET': 'Detroit Red Wings',
+    'EDM': 'Edmonton Oilers',
+    'FLA': 'Florida Panthers',
+    'LAK': 'Los Angeles Kings',
+    'MIN': 'Minnesota Wild',
+    'MTL': 'Montreal Canadiens',
+    'NSH': 'Nashville Predators',
+    'NJD': 'New Jersey Devils',
+    'NYI': 'New York Islanders',
+    'NYR': 'New York Rangers',
+    'OTT': 'Ottawa Senators',
+    'PHI': 'Philadelphia Flyers',
+    'PIT': 'Pittsburgh Penguins',
+    'SEA': 'Seattle Kraken',
+    'SJS': 'San Jose Sharks',
+    'STL': 'St. Louis Blues',
+    'TBL': 'Tampa Bay Lightning',
+    'TOR': 'Toronto Maple Leafs',
+    'VAN': 'Vancouver Canucks',
+    'VGK': 'Vegas Golden Knights',
+    'WSH': 'Washington Capitals',
+    'WPG': 'Winnipeg Jets'
+}
+
+@app.template_filter('abbreviationtofull')
+def abbrevaiton_to_full(abbr):
+    return NHL_TEAMS[abbr]
+
 def get_db_connection():
     # '/home/CharlieJubera/HockeySavant/hockeysavant_app/hockeysavant.db' for server
     conn = sqlite3.connect('hockeysavant_app/hockeysavant.db')
@@ -130,6 +169,24 @@ def player(player_id):
     conn.close()
     
     return render_template('player.html', player_data=player_data, player_stats=player_stats, player_info=player_json)
+
+
+@app.template_filter('predraftteam')
+def preDraftTeam(season_drafted, seasons):
+    games_played = 0
+    main_team = None
+    main_league = None
+    draft_year = str(season_drafted - 1) + str(season_drafted)
+    for season_info in seasons:  
+        if str(season_info['season']) == draft_year:  
+            
+            if games_played < season_info['gamesPlayed']:  
+                games_played = season_info['gamesPlayed']
+                main_team = season_info['teamName']  
+                main_league = season_info['leagueAbbrev']  
+
+    return f"{main_team}, {main_league}"
+
 
 @app.route('/skater_percentile/<player_id>')
 def skater_percentile(player_id):

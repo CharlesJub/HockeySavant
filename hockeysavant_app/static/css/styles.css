@@ -151,10 +151,18 @@ body{
     width: 100%;
 }
 
+.draft-info{
+    position: absolute;
+    left: 50%; 
+    transform: translate(-50%, 0);
+    top: 285px;
+    width: 100%;
+}
+
 #recent-seasons{
     position: absolute;
     left: 50%; 
     transform: translate(-50%, 0);
-    top: 300px;
+    top: 320px;
     width: 100%;
 }

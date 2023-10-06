@@ -143,7 +143,7 @@ function interpolateColor(color1, color2, color3, value) {
 
 function updatePercentileGraph(data) {
     const percentileValues = document.querySelectorAll('.percentileValue');
-
+    console.log(data);
     percentileValues.forEach(function (percentileValue){
         const percentile = Math.round(data[0][percentileValue.id]);
         const percentileText = percentileValue.querySelector('#percentile-text');

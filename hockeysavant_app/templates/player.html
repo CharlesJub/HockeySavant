@@ -63,6 +63,9 @@
               <div class="player-title">{{ player_data[1] }}</div>
               <img src="https://assets.nhle.com/mugs/nhl/latest/{{ player_data[0] }}.png" alt="Picture of {{ player_data[1] }}" id="player-mug">
               <div class="player_info" id="{{ player_data[0]}}">{{ player_data[8] }} | Shoots: {{ player_data[6] }} | {{ player_data[4] }} {{ player_data[5] }}LBS | Age: {{ player_data[2] }} | Nationality: {{ player_data[3] }}</div>
+              <div class="draft-info">Draft: {{ player_info.draftDetails.year}} | Round: {{ player_info.draftDetails.round }}, #{{ player_info.draftDetails.pickInRound }}, {{ player_info.draftDetails.teamAbbrev|abbreviationtofull }} | {{ player_info.draftDetails.year|predraftteam(player_info.seasonTotals) }}
+                
+              </div>
               <table class="table table-striped" id="recent-seasons">
                   <tr>
                       <th>Season</th>
