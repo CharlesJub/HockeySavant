@@ -50,7 +50,7 @@ function updateRink(data) {
         data.forEach(dataElement => {
             const x = mapValue(dataElement.coordsX, -100, 100, 0, newCanvas.width);
             const y = mapValue(-dataElement.coordsY, -100, 100, 0, newCanvas.height);
-
+            
             // Calculate the distance between the click point and the center of the circle
             const distance = Math.sqrt(Math.pow(clickX - x, 2) + Math.pow(clickY - y, 2));
 
@@ -106,11 +106,21 @@ function updateRink(data) {
           tooltip.style.display = "none";
         }
     });
-
+    const player_id = $('.player_info').attr('id');
+    console.log(player_id)
     data.forEach(dataElement => {
         const x = mapValue(dataElement.coordsX, -100, 100, 0, newCanvas.width);
         const y = mapValue(-dataElement.coordsY, -100, 100, 0, newCanvas.height);
-
+        console.log(dataElement)
+        
+        if (dataElement.eventPlayer1 == player_id) {
+            new_ctx.fillStyle = "red";
+        } else if (dataElement.eventPlayer2 == player_id | dataElement.eventPlayer3 == player_id) {
+            new_ctx.fillStyle = "blue";
+        } else {
+            new_ctx.fillStyle = "#808080";
+        }
+            
         // Draw the circle with a border
         new_ctx.beginPath();
         new_ctx.arc(x, y, CIRCLE_RADIUS, 0, Math.PI * 2); // Draw the circle
