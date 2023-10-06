@@ -63,13 +63,15 @@ function updateRink(data) {
 
     const tooltip = document.getElementById("tooltip");
 
-
     newCanvas.addEventListener("mousemove", function (event) {
       const clickX = event.clientX - newCanvas.getBoundingClientRect().left;
       const clickY = event.clientY - newCanvas.getBoundingClientRect().top;
-
+      
+      
       let hoveredElement = null; // Use a different variable name to avoid confusion
-
+      let tooltipX = null;
+      let tooltipY = null;
+    
       data.forEach(dataElement => {
           const x = mapValue(dataElement.coordsX, -100, 100, 0, newCanvas.width);
           const y = mapValue(-dataElement.coordsY, -100, 100, 0, newCanvas.height);
@@ -81,7 +83,8 @@ function updateRink(data) {
           // Check if the click is within the circle
           if (distance <= CIRCLE_RADIUS) { 
             hoveredElement = dataElement;
-            
+            tooltipX = x;
+            tooltipY = y;
           }
       });
       
@@ -93,11 +96,9 @@ function updateRink(data) {
         tooltip.textContent = hoveredElement.eventDescription;
 
         const tooltipWidth = tooltip.offsetWidth;
-        const tooltipHeight = tooltip.offsetHeight;
-        
-        tooltip.style.left = `${mapValue(hoveredElement.coordsX, -100, 100, 0, canvas.width) - (tooltipWidth/2)}px`;
-        tooltip.style.top = `${mapValue(-hoveredElement.coordsY, -100, 100, 0, canvas.height) - (tooltipHeight/4)}px`;     
-        
+        const tooltipHeight = tooltip.offsetHeight;  
+        tooltip.style.left = `${tooltipX - tooltipWidth/2}px`;
+        tooltip.style.top = `${tooltipY - tooltipHeight - 6}px`;    
         } else {
           // Change Mouse
           newCanvas.style.cursor = "default";
@@ -143,7 +144,6 @@ function interpolateColor(color1, color2, color3, value) {
 
 function updatePercentileGraph(data) {
     const percentileValues = document.querySelectorAll('.percentileValue');
-    console.log(data);
     percentileValues.forEach(function (percentileValue){
         const percentile = Math.round(data[0][percentileValue.id]);
         const percentileText = percentileValue.querySelector('#percentile-text');

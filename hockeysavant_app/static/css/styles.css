@@ -24,12 +24,13 @@ body{
 
 #tooltip {
     position: absolute;
-    background-color: #333; /* Background color */
-    color: #fff; /* Text color */
-    padding: 3px; /* Add padding for better appearance */
-    border-radius: 5px; /* Rounded corners */
-    display: none; /* Initially hide the tooltip */
-    z-index: 100;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 1; /* Ensure the tooltip appears above the canvas */
   }
 
 .player-stats {
@@ -40,7 +41,7 @@ body{
     margin: 1px;
     /* reduce width of player-stats */
     width: 600px;
-    height: 600px;
+    height: 565px;
     text-align: center;
     /* add space from top  */
 }
@@ -165,4 +166,15 @@ body{
     transform: translate(-50%, 0);
     top: 320px;
     width: 100%;
+}
+
+.rink{
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.title{
+    font-size: 20px; 
+    font-weight: bold;
 }
