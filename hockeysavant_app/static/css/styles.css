@@ -176,7 +176,6 @@ body{
 
 .title{
     font-size: 20px; 
-    font-weight: bold;
 }
 
 .iframe-container {
@@ -193,3 +192,32 @@ transform: translate(-50%, 0);
 width: 60%;
 height: 60%;
 }
+
+
+/* Styles for year selection on player page */
+.selected-dropdown{
+    font-weight: bold;
+    user-select: none;
+  }
+  
+  .selected-dropdown:hover{
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .rink-year-selector,
+  .percentile-year-selector{
+    position: absolute;
+    display: block;
+    top: 27px;
+    left: 3px;
+    border: 2px solid black;
+    background-color: white;
+    z-index: 1000;
+    font-size: 16px;
+  }
+  .dropdown-select:hover{
+    background-color: #95a5a6;
+    color: white;
+    cursor: pointer;
+  }
+  /* End of styles for year selection on player page */

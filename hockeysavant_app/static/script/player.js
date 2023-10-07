@@ -5,6 +5,59 @@ window.onload = function() {
     copyGoalToCanvas();
 };
 
+function yearDropdown() {
+    // Set buttons
+  const percentileYearButton = document.getElementById("percentile-year");
+  const rinkYearButton = document.getElementById("rink-year");
+  // Set dropdown menus
+  const percentileYearDropdown = document.getElementsByClassName("percentile-year-selector")[0];
+  const rinkYearDropdown = document.getElementsByClassName("rink-year-selector")[0];
+  // Set options in dropdown menus
+  const yearOptions = document.getElementsByClassName("dropdown-select");
+  const yearOptionsArray = Array.from(yearOptions);
+  // Set year selected
+  const yearLabel = document.getElementsByClassName("selected-dropdown");
+  const yearLabelArray = Array.from(yearLabel);
+
+
+
+  // Create Click event for rink year dropdown
+  percentileYearButton.addEventListener("click", function() {
+    if (percentileYearDropdown.style.display == 'block') {
+      percentileYearDropdown.style.display = 'none';
+    } else if (percentileYearDropdown.style.display == 'none') {
+      percentileYearDropdown.style.display = 'block';
+    }
+    
+  });
+  yearOptionsArray.forEach(function (element) {
+    element.addEventListener("click", function () {
+      yearLabel.innerHTML = element.innerText;
+      yearLabel[0].attributes.value = element.attributes[0];
+      yearLabel[1].attributes.value = element.attributes[0];
+    });
+  });
+  // Create Click event for rink year dropdown
+  rinkYearButton.addEventListener("click", function() {
+    if (rinkYearDropdown.style.display == 'block') {
+      rinkYearDropdown.style.display = 'none';
+    } else if (rinkYearDropdown.style.display == 'none') {
+      rinkYearDropdown.style.display = 'block';
+    }
+  });
+  yearOptionsArray.forEach(function (element) {
+    element.addEventListener("click", function () {
+
+      yearLabelArray[0].innerHTML = element.innerText;
+      yearLabelArray[0].setAttribute('value', element.getAttribute('data-value'))
+
+      yearLabelArray[1].innerHTML = element.innerText;
+      yearLabelArray[1].setAttribute('value', element.getAttribute('data-value'))
+      
+    });
+  });
+  }
+
 function copyRinkToCanvas(width, height) {
     var image = document.getElementById("rink_image")
     var canvas = document.querySelector("canvas")
@@ -107,11 +160,9 @@ function updateRink(data) {
         }
     });
     const player_id = $('.player_info').attr('id');
-    console.log(player_id)
     data.forEach(dataElement => {
         const x = mapValue(dataElement.coordsX, -100, 100, 0, newCanvas.width);
         const y = mapValue(-dataElement.coordsY, -100, 100, 0, newCanvas.height);
-        console.log(dataElement)
         
         if (dataElement.eventPlayer1 == player_id) {
             new_ctx.fillStyle = "red";
@@ -150,7 +201,6 @@ function interpolateColor(color1, color2, color3, value) {
       return `rgb(${r}, ${g}, ${b})`;
     }
   }
-
 
 function updatePercentileGraph(data) {
     const percentileValues = document.querySelectorAll('.percentileValue');
@@ -225,83 +275,104 @@ function copyGoalToCanvas(){
     });
 }
 
+function requestRinkData($) {
+  const player_id = $('.player_info').attr('id');
+  const strength_type = $('.event-filter.active').attr('name');
+  const highlight_type = $('.strength-filter.active').attr('name');
+  const year = $('.selected-dropdown')[0].attributes.value.textContent;
+
+  $.ajax({
+    url: '/goal_data/' + player_id,
+    type: 'GET',
+    dataType: 'json',
+    data: {
+      highlight: highlight_type,
+      strength: strength_type,
+      year: year
+    },
+    success: function(data) {
+      // Handle the data received from the server
+      // Update the HTML on the /players page with the data
+      updateRink(data);      
+    },
+    error: function(error) {
+      console.error('Error fetching goal data: ', error);
+    }
+  });
+}
+function requestPercentileData($) {
+  const player_id = $('.player_info').attr('id');
+  const year = $('.selected-dropdown')[0].attributes.value.textContent;
+
+  $.ajax({
+      url: '/skater_percentile/' + player_id,
+      type: 'GET',
+      dataType: 'json',
+      data: {
+        year: year
+      },
+      success: function(data) {
+      // Handle the data received from the server
+      // Update the HTML on the /players page with the data
+      updatePercentileGraph(data);
+      },
+      error: function(error) {
+      console.error('Error fetching percentile data: ', error);
+      }
+  });
+    
+}
+function requestPlayerData($) {
+  requestPercentileData($);
+  requestRinkData($);
+}
 // Code for rink updating 
 // TODO - add more info to the tool tip
 // TODO - add season filter
 // TODO - add en filter 
 jQuery(document).ready(function($) {
-    
-    // Percentile Stuff
-    
-    // Get rink points on load:
+
+  // Year select
+  yearDropdown();
+  
+  // Percentile Stuff
+  
+  // Get rink points on load:
+  setTimeout(requestPlayerData($), 1);
+  
+  // Reload data with new filters
+  $('.btn.video-filter').click(function(){
+    // Add small wait to make sure the button clicked is the active button
     setTimeout(function() {
-        const player_id = $('.player_info').attr('id');
-        const strength_type = $('.event-filter.active').attr('name');
-        const highlight_type = $('.strength-filter.active').attr('name');
+    const strength_type = $('.event-filter.active').attr('name');
+    const highlight_type = $('.strength-filter.active').attr('name');
+    const player_id = $('.player_info').attr('id');
+    const year = $('.selected-dropdown')[0].attributes.value.textContent;
 
-        $.ajax({
-          url: '/goal_data/' + player_id,
-          type: 'GET',
-          dataType: 'json',
-          data: {
-            highlight: highlight_type,
-            strength: strength_type
-          },
-          success: function(data) {
-            // Handle the data received from the server
-            // Update the HTML on the /players page with the data
-            updateRink(data);      
-          },
-          error: function(error) {
-            console.error('Error fetching goal data: ', error);
-          }
-        });
-
-        $.ajax({
-            url: '/skater_percentile/' + player_id,
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) {
-            // Handle the data received from the server
-            // Update the HTML on the /players page with the data
-            updatePercentileGraph(data);
-            },
-            error: function(error) {
-            console.error('Error fetching percentile data: ', error);
-            }
-        });
-    }, 1);
-    
-    // Reload data with new filters
-    $('.btn.video-filter').click(function(){
-        // Add small wait to make sure the button clicked is the active button
-        setTimeout(function() {
-        var strength_type = $('.event-filter.active').attr('name');
-        var highlight_type = $('.strength-filter.active').attr('name');
-        var player_id = $('.player_info').attr('id');
-        $.ajax({
-            url: '/goal_data/' + player_id,
-            type: 'GET',
-            dataType: 'json',
-            data: {
-            highlight: highlight_type,
-            strength: strength_type
-            },
-            success: function(data) {
-            // Handle the data received from the server
-            // Update the HTML on the /players page with the data
-            updateRink(data);       
-            },
-            error: function(error) {
-            console.error('Error fetching data: ', error);
-            }
-        });
-
-        }, 1);
+    $.ajax({
+        url: '/goal_data/' + player_id,
+        type: 'GET',
+        dataType: 'json',
+        data: {
+          highlight: highlight_type,
+          strength: strength_type,
+          year: year
+        },
+        success: function(data) {
+        // Handle the data received from the server
+        // Update the HTML on the /players page with the data
+        updateRink(data);       
+        },
+        error: function(error) {
+        console.error('Error fetching data: ', error);
+        }
     });
+
+    }, 1);
+  });
+
+  $('.dropdown-select').click(function(){
+    setTimeout(requestPlayerData($), 1);
+  })
 });
-
-
-
-
 

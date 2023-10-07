@@ -190,14 +190,15 @@ def preDraftTeam(season_drafted, seasons):
 
 @app.route('/skater_percentile/<player_id>')
 def skater_percentile(player_id):
-
+    year = request.args.get('year')
+    print(year)
     conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute(f"""SELECT * 
                        FROM "percentiles"
                        WHERE "id" = '{player_id}'
-                       AND "season" = '20222023'
+                       AND "season" = '{year}'
                     """)
     percentile_column_names = [description[0] for description in cursor.description]
     percentile_stats = [dict(zip(percentile_column_names, row)) for row in cursor.fetchall()]
@@ -212,7 +213,7 @@ def goal_data(player_id):
     
     highlight_type = request.args.get('highlight')
     strength_type = request.args.get('strength')
-    # year = request.args.get('year')
+    year = request.args.get('year')
 
     strength_type_query = ""
     event_type_query = ""
@@ -244,7 +245,7 @@ def goal_data(player_id):
                     FROM play_by_play
                     WHERE {strength_type_query}
                     AND {event_type_query}
-                    AND "season"=20222023"""
+                    AND "season"={year}"""
     
     conn = get_db_connection()
     cursor = conn.cursor()
