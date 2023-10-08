@@ -357,6 +357,7 @@ jQuery(document).ready(function($) {
   });
   
   $('.dropdown-select').click(function(){
+    cachedRinkData = null;
     setTimeout(requestPlayerData($), 1);
   })
   
