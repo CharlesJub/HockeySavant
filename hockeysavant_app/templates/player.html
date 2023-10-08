@@ -48,7 +48,6 @@
 
 
 <body>
-  
   <div class="container" style="margin-bottom: 20px; max-width: 60%;">
     {% if player_info.position == "G" %}
       <p style="font-weight: bold; font-size: 34px; color: red;">GOALIE STATS ARE BEING WORKED ON!</title> 
@@ -357,61 +356,62 @@
         </div>
       <div class="row">
         <div class="player-stats col-sm" id="event-rink" style="padding: 10px;">
-          <div class="title">
+            <div class="title">
+                
+              <span class="selected-dropdown-wrapper" style="position: relative;" id="rink-year">
+                <span class="selected-dropdown" value="{{ ((player_stats[-1][1])|string) }}">{{ ((player_stats[-1][1])|string)[:4] }}</span>
+                <div class="rink-year-selector" style="display: none;">
+                  {% for row in player_stats|reverse %}
+                    <div data-value="{{(row[1]|string)}}" class="dropdown-select">{{(row[1]|string)[:4]}}</div>
+                  {% endfor %}
+                </div>
+              </span>
               
-            <span class="selected-dropdown-wrapper" style="position: relative;" id="rink-year">
-              <span class="selected-dropdown" value="{{ ((player_stats[-1][1])|string) }}">{{ ((player_stats[-1][1])|string)[:4] }}</span>
-              <div class="rink-year-selector" style="display: none;">
-                {% for row in player_stats|reverse %}
-                  <div data-value="{{(row[1]|string)}}" class="dropdown-select">{{(row[1]|string)[:4]}}</div>
-                {% endfor %}
-              </div>
-            </span>
+              Event Locations</div>
+            <!-- Content for the third pane -->
+            <img id='rink_image' src="{{ url_for('static', filename='hockey_rink_clear.jpg')}}" hidden>
+            <div class="rink" id="rink" style="width: 100%; border: 1px solid red;">
+              <canvas id="rink_canvas" width="900px" height="383px"></canvas>
+              <div id="tooltip" style="display: none;"></div>
+            </div>
             
-            Event Locations</div>
-          <!-- Content for the third pane -->
-          <img id='rink_image' src="{{ url_for('static', filename='hockey_rink_clear.jpg')}}" hidden>
-          <div class="rink" id="rink" style="width: 900px; height: 383px;">
-            <canvas id="rink_canvas" width="900px" height="383px"></canvas>
-            <div id="tooltip" style="display: none;"></div>
-          </div>
-          
-          
-          
-          <div class="btn-spacer">
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-secondary video-filter event-filter active" name="goals">
-              <input type="radio" autocomplete="off" checked> Goals
-            </label>
-            <label class="btn btn-secondary video-filter event-filter" name="assists">
-              <input type="radio" autocomplete="off"> Assists
-            </label>
-            <label class="btn btn-secondary video-filter event-filter" name="goals_for">
-              <input type="radio" autocomplete="off"> Goals For
-            </label>
-            <label class="btn btn-secondary video-filter event-filter" name="goals_against">
-                <input type="radio" autocomplete="off"> Goals Against
+            
+            
+            <div class="btn-spacer">
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+              <label class="btn btn-secondary video-filter event-filter active" name="goals">
+                <input type="radio" autocomplete="off" checked> Goals
               </label>
+              <label class="btn btn-secondary video-filter event-filter" name="assists">
+                <input type="radio" autocomplete="off"> Assists
+              </label>
+              <label class="btn btn-secondary video-filter event-filter" name="goals_for">
+                <input type="radio" autocomplete="off"> Goals For
+              </label>
+              <label class="btn btn-secondary video-filter event-filter" name="goals_against">
+                  <input type="radio" autocomplete="off"> Goals Against
+                </label>
+                </div>
+              </div>
+            <div class="btn-spacer">
+              <div class="btn-group btn-group-toggle " data-toggle="buttons">
+                <label class="btn btn-secondary video-filter strength-filter active" name="all_events">
+                  <input type="radio" autocomplete="off" checked> All
+                </label>
+                <label class="btn btn-secondary video-filter strength-filter" name="ev_events">
+                  <input type="radio" autocomplete="off"> Even Strength
+                </label>
+                <label class="btn btn-secondary video-filter strength-filter" name="pp_events">
+                  <input type="radio" autocomplete="off"> Power-play
+                </label>
+                <label class="btn btn-secondary video-filter strength-filter" name="sh_events">
+                    <input type="radio" autocomplete="off"> Shorthanded
+                  </label>
               </div>
             </div>
-          <div class="btn-spacer">
-            <div class="btn-group btn-group-toggle " data-toggle="buttons">
-              <label class="btn btn-secondary video-filter strength-filter active" name="all_events">
-                <input type="radio" autocomplete="off" checked> All
-              </label>
-              <label class="btn btn-secondary video-filter strength-filter" name="ev_events">
-                <input type="radio" autocomplete="off"> Even Strength
-              </label>
-              <label class="btn btn-secondary video-filter strength-filter" name="pp_events">
-                <input type="radio" autocomplete="off"> Power-play
-              </label>
-              <label class="btn btn-secondary video-filter strength-filter" name="sh_events">
-                  <input type="radio" autocomplete="off"> Shorthanded
-                </label>
-            </div>
-          </div>
-          
-      </div>
+            
+        </div>
+        <div class="player-stats col-sm" id="event-table" style="padding: 10px;">
         </div>
   </div>
 </body>

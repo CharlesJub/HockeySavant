@@ -1,10 +1,4 @@
 
-window.onload = function() {
-    const canvas = document.getElementById("rink_canvas");
-    copyRinkToCanvas(canvas.width, canvas.height);
-    copyGoalToCanvas();
-};
-
 function yearDropdown() {
     // Set buttons
   const percentileYearButton = document.getElementById("percentile-year");
@@ -80,15 +74,16 @@ function mapValue(value, old_min, old_max, new_min, new_max) {
 }
 
 function updateRink(data) {
+    const rink_container = document.getElementById("rink");
     const canvas = document.getElementById("rink_canvas");
     const ctx = canvas.getContext("2d");
     const CIRCLE_RADIUS = 5;
 
     // Call the clearCanvas function whenever you want to clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, rink_container.clientWidth, rink_container.clientWidth * .425);
     const newCanvas = canvas.cloneNode(true);
     canvas.parentNode.replaceChild(newCanvas, canvas);
-    copyRinkToCanvas(newCanvas.width, newCanvas.height);
+    copyRinkToCanvas(rink_container.clientWidth, rink_container.clientWidth * .425);
     const new_ctx = newCanvas.getContext("2d");
     new_ctx.fillStyle = "green";
     // Set the circle border color and width
@@ -101,8 +96,8 @@ function updateRink(data) {
         const clickY = event.clientY - newCanvas.getBoundingClientRect().top;
 
         data.forEach(dataElement => {
-            const x = mapValue(dataElement.coordsX, -100, 100, 0, newCanvas.width);
-            const y = mapValue(-dataElement.coordsY, -100, 100, 0, newCanvas.height);
+            const x = mapValue(dataElement.coordsX, -100, 100, 0, rink_container.clientWidth);
+            const y = mapValue(-dataElement.coordsY, -100, 100, 0, rink_container.clientWidth * .425);
             
             // Calculate the distance between the click point and the center of the circle
             const distance = Math.sqrt(Math.pow(clickX - x, 2) + Math.pow(clickY - y, 2));
@@ -126,8 +121,8 @@ function updateRink(data) {
       let tooltipY = null;
     
       data.forEach(dataElement => {
-          const x = mapValue(dataElement.coordsX, -100, 100, 0, newCanvas.width);
-          const y = mapValue(-dataElement.coordsY, -100, 100, 0, newCanvas.height);
+          const x = mapValue(dataElement.coordsX, -100, 100, 0, rink_container.clientWidth);
+          const y = mapValue(-dataElement.coordsY, -100, 100, 0, rink_container.clientWidth * .425);
           
           // Calculate the distance between the click point and the center of the circle
           const distance = Math.sqrt(Math.pow(clickX - x, 2) + Math.pow(clickY - y, 2));
@@ -161,8 +156,8 @@ function updateRink(data) {
     });
     const player_id = $('.player_info').attr('id');
     data.forEach(dataElement => {
-        const x = mapValue(dataElement.coordsX, -100, 100, 0, newCanvas.width);
-        const y = mapValue(-dataElement.coordsY, -100, 100, 0, newCanvas.height);
+        const x = mapValue(dataElement.coordsX, -100, 100, 0, rink_container.clientWidth);
+        const y = mapValue(-dataElement.coordsY, -100, 100, 0, rink_container.clientWidth * .425);
         
         if (dataElement.eventPlayer1 == player_id) {
             new_ctx.fillStyle = "red";
@@ -276,29 +271,37 @@ function copyGoalToCanvas(){
 }
 
 function requestRinkData($) {
-  const player_id = $('.player_info').attr('id');
-  const strength_type = $('.event-filter.active').attr('name');
-  const highlight_type = $('.strength-filter.active').attr('name');
-  const year = $('.selected-dropdown')[0].attributes.value.textContent;
+  // Check if the data is already cached
+  if (cachedRinkData) {
+    updateRink(cachedRinkData);
+  } else {
+    const player_id = $('.player_info').attr('id');
+    const strength_type = $('.event-filter.active').attr('name');
+    const highlight_type = $('.strength-filter.active').attr('name');
+    const year = $('.selected-dropdown')[0].attributes.value.textContent;
 
-  $.ajax({
-    url: '/goal_data/' + player_id,
-    type: 'GET',
-    dataType: 'json',
-    data: {
-      highlight: highlight_type,
-      strength: strength_type,
-      year: year
-    },
-    success: function(data) {
-      // Handle the data received from the server
-      // Update the HTML on the /players page with the data
-      updateRink(data);      
-    },
-    error: function(error) {
-      console.error('Error fetching goal data: ', error);
-    }
-  });
+    $.ajax({
+      url: '/goal_data/' + player_id,
+      type: 'GET',
+      dataType: 'json',
+      data: {
+        highlight: highlight_type,
+        strength: strength_type,
+        year: year
+      },
+      success: function(data) {
+        // Cache the data
+        cachedRinkData = data;
+        
+        // Handle the data received from the server
+        // Update the HTML on the /players page with the data
+        updateRink(data);
+      },
+      error: function(error) {
+        console.error('Error fetching goal data: ', error);
+      }
+    });
+  }
 }
 function requestPercentileData($) {
   const player_id = $('.player_info').attr('id');
@@ -326,21 +329,37 @@ function requestPlayerData($) {
   requestPercentileData($);
   requestRinkData($);
 }
+
+
+
+
+let cachedRinkData = null;
+const rink_container = document.getElementById("rink");
+  
+
 // Code for rink updating 
 // TODO - add more info to the tool tip
 // TODO - add season filter
 // TODO - add en filter 
 jQuery(document).ready(function($) {
-
   // Year select
   yearDropdown();
-  
-  // Percentile Stuff
   
   // Get rink points on load:
   setTimeout(requestPlayerData($), 1);
   
-  // Reload data with new filters
+  rink_container.style.height = rink_container.clientWidth *.425 + 'px'
+
+
+  $(window).on('resize', function() {
+    rink_container.style.height = rink_container.clientWidth *.425 + 'px'
+    requestRinkData($);
+  });
+  
+  $('.dropdown-select').click(function(){
+    setTimeout(requestPlayerData($), 1);
+  })
+  
   $('.btn.video-filter').click(function(){
     // Add small wait to make sure the button clicked is the active button
     setTimeout(function() {
@@ -348,7 +367,7 @@ jQuery(document).ready(function($) {
     const highlight_type = $('.strength-filter.active').attr('name');
     const player_id = $('.player_info').attr('id');
     const year = $('.selected-dropdown')[0].attributes.value.textContent;
-
+  
     $.ajax({
         url: '/goal_data/' + player_id,
         type: 'GET',
@@ -367,12 +386,9 @@ jQuery(document).ready(function($) {
         console.error('Error fetching data: ', error);
         }
     });
-
+  
     }, 1);
   });
-
-  $('.dropdown-select').click(function(){
-    setTimeout(requestPlayerData($), 1);
-  })
 });
+
 
