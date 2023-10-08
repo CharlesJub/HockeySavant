@@ -411,10 +411,46 @@
             </div>
             
         </div>
-        <div class="player-stats col-sm" id="event-table" style="padding: 10px;">
+        <div class="player-stats col-sm" id="event-table-container" style="padding: 0px;">
+          <div class="title">2022 Event Table</div>
+          <div class="table-container">
+            <table class="table table-striped" id="event-table">
+              <thead class="event-thead">
+                <tr>
+                  <th>Event</th>
+                  <th>Link</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Add table rows and data here -->
+              </tbody>
+            </table>
+          </div>
+<style>
+  .table-container {
+  max-height: 533px; /* Set the maximum height of the table container */
+  overflow-y: scroll; /* Enable vertical scrolling within the container */
+}
+
+#event-table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.event-thead {
+  background-color: #f2f2f2; /* Background color for table headers */
+  position: sticky; /* Make the headers sticky */
+  top: 0; /* Stick the headers to the top of the container */
+  z-index: 1; /* Ensure headers are displayed above the tbody */
+}
+
+
+</style>          
+
         </div>
   </div>
 </body>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 

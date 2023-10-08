@@ -60,8 +60,9 @@ body{
     /* max-width: 60%; */
     width: 60%;
     min-width: 515px;
+    /* height: 415px; */
 }   
-.player-stats#event-table{
+.player-stats#event-table-container{
     max-width: 40%;
     /* min-width: 40%; */
 }

@@ -296,6 +296,7 @@ function requestRinkData($) {
         // Handle the data received from the server
         // Update the HTML on the /players page with the data
         updateRink(data);
+        updateEventTable(data);
       },
       error: function(error) {
         console.error('Error fetching goal data: ', error);
@@ -330,7 +331,19 @@ function requestPlayerData($) {
   requestRinkData($);
 }
 
-
+function updateEventTable(data) {
+  var table = $('#event-table tbody');
+  table.empty();
+  console.log(table);
+  data.forEach(function(element){
+    var newRow = '<tr>';
+    newRow += '<td>' + element.eventDescription + '</td>';
+    newRow += '<td>' + '<a href=/video/' + element.gameId + '-' + element.playId + '> Highlight' + '</td>';
+    newRow += '</tr>';
+    table.append(newRow);
+  });
+  
+}
 
 
 let cachedRinkData = null;
@@ -381,7 +394,8 @@ jQuery(document).ready(function($) {
         success: function(data) {
         // Handle the data received from the server
         // Update the HTML on the /players page with the data
-        updateRink(data);       
+        updateRink(data);  
+        updateEventTable(data);  
         },
         error: function(error) {
         console.error('Error fetching data: ', error);
