@@ -215,30 +215,36 @@ def goal_data(player_id):
     strength_type = request.args.get('strength')
     year = request.args.get('year')
 
+
     strength_type_query = ""
     event_type_query = ""
-    if highlight_type == 'all_events':
+    print(strength_type)
+    if strength_type == 'all_events':
         strength_type_query = '"strength" IN (\'EV\', \'PP\', \'SH\')'
-    if highlight_type == 'ev_events':
+    if strength_type == 'ev_events':
         strength_type_query = '"strength" = \'EV\''
-    if highlight_type == 'pp_events':
+    if strength_type == 'pp_events':
         strength_type_query = '"strength" = \'PP\''
-    if highlight_type == 'sh_events':
+    if strength_type == 'sh_events':
         strength_type_query = '"strength" = \'SH\''
-
-    if strength_type == 'goals':
+    print(strength_type_query)
+    if highlight_type == 'goals':
         event_type_query = f'"eventType" = \'Goal\' AND "eventPlayer1" = {player_id}'
-    if strength_type == 'assists':
+    if highlight_type == 'assists':
         event_type_query = f'"eventType" = \'Goal\' AND ("eventPlayer2" = {player_id} OR "eventPlayer3" = {player_id})'
-    if strength_type == 'goals_for':
+    if highlight_type == 'goals_for':
         event_type_query = f""" "eventType" = \'Goal\' AND 
                                 (("homeTeam" = "eventTeam" AND ("home1" = '{player_id}' OR "home2" = '{player_id}' OR "home3" = '{player_id}' OR "home4" = '{player_id}' OR "home5" = '{player_id}' OR "home6" = '{player_id}')) OR
                                 ("awayTeam" = "eventTeam" AND ("away1" = '{player_id}' OR "away2" = '{player_id}' OR "away3" = '{player_id}' OR "away4" = '{player_id}' OR "away5" = '{player_id}' OR "away6" = '{player_id}')))
                                 """
-    if strength_type == 'goals_against':
+    if highlight_type == 'goals_against':
         event_type_query = f""" "eventType" = \'Goal\' AND 
                                 (("homeTeam" != "eventTeam" AND ("home1" = '{player_id}' OR "home2" = '{player_id}' OR "home3" = '{player_id}' OR "home4" = '{player_id}' OR "home5" = '{player_id}' OR "home6" = '{player_id}')) OR
                                 ("awayTeam" != "eventTeam" AND ("away1" = '{player_id}' OR "away2" = '{player_id}' OR "away3" = '{player_id}' OR "away4" = '{player_id}' OR "away5" = '{player_id}' OR "away6" = '{player_id}')))
+                                """
+    if highlight_type == 'goal_on':
+        event_type_query = f""" "eventType" = \'Goal\' AND 
+                                (("homeTeam" != "eventTeam" AND ("homeGoalie" = '{player_id}')) OR ("awayTeam" != "eventTeam" AND ("awayGoalie" = '{player_id}')))
                                 """
     
     full_query = f"""SELECT *
@@ -246,6 +252,7 @@ def goal_data(player_id):
                     WHERE {strength_type_query}
                     AND {event_type_query}
                     AND "season"={year}"""
+    print(full_query)
     
     conn = get_db_connection()
     cursor = conn.cursor()

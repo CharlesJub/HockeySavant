@@ -65,7 +65,10 @@ body{
 .player-stats#event-table-container{
     max-width: 40%;
     min-width: 245px;
-    height: 490px;
+    height: 490px;    
+    position: relative;
+    z-index: -1;
+    
 }
 
 .btn-spacer {
@@ -192,12 +195,12 @@ body{
 }
 
 .iframe-container iframe {
-position: absolute;
-top: 5%;
-left: 50%;
-transform: translate(-50%, 0);
-width: 60%;
-height: 60%;
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 60%;
+    height: 60%;
 }
 
 
@@ -229,3 +232,4 @@ height: 60%;
     cursor: pointer;
   }
   /* End of styles for year selection on player page */
+

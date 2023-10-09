@@ -43,7 +43,6 @@ function yearDropdown() {
   });
 
   tableYearButton.addEventListener("click", function() {
-    console.log(tableYearDropdown)
     if (tableYearDropdown.style.display == 'block') {
       tableYearDropdown.style.display = 'none';
     } else if (tableYearDropdown.style.display == 'none') {
@@ -155,7 +154,6 @@ function updateRink(data) {
         newCanvas.style.cursor = "pointer";
 
         tooltip.style.display = "block";
-
         tooltip.textContent = hoveredElement.eventDescription;
 
         const tooltipWidth = tooltip.offsetWidth;
@@ -180,6 +178,9 @@ function updateRink(data) {
             new_ctx.fillStyle = "blue";
         } else {
             new_ctx.fillStyle = "#808080";
+        }
+        if(position == "G"){
+          new_ctx.fillStyle = "red";
         }
             
         // Draw the circle with a border
@@ -291,8 +292,8 @@ function requestRinkData($) {
     updateRink(cachedRinkData);
   } else {
     const player_id = $('.player_info').attr('id');
-    const strength_type = $('.event-filter.active').attr('name');
-    const highlight_type = $('.strength-filter.active').attr('name');
+    const highlight_type = $('.event-filter.active').attr('name');
+    const strength_type = $('.strength-filter.active').attr('name');
     const year = $('.selected-dropdown')[0].attributes.value.textContent;
 
     $.ajax({
@@ -341,7 +342,7 @@ function requestPercentileData($) {
   });
     
 }
-function requestPlayerData($) {
+function requestSkaterData($) {
   requestPercentileData($);
   requestRinkData($);
 }
@@ -362,18 +363,19 @@ function updateEventTable(data) {
 
 let cachedRinkData = null;
 const rink_container = document.getElementById("rink");
-  
+const position = document.getElementsByClassName('player_info')[0].getAttribute('position')
 
 // Code for rink updating 
 // TODO - add more info to the tool tip
 // TODO - add season filter
 // TODO - add en filter 
 jQuery(document).ready(function($) {
+  
   // Year select
   yearDropdown();
   
   // Get rink points on load:
-  setTimeout(requestPlayerData($), 1);
+  setTimeout(requestSkaterData($), 1);
   
   rink_container.style.height = rink_container.clientWidth *.425 + 'px'
 
@@ -385,14 +387,15 @@ jQuery(document).ready(function($) {
   
   $('.dropdown-select').click(function(){
     cachedRinkData = null;
-    setTimeout(requestPlayerData($), 1);
+    setTimeout(requestSkaterData($), 1);
   })
   
   $('.btn.video-filter').click(function(){
     // Add small wait to make sure the button clicked is the active button
     setTimeout(function() {
-    const strength_type = $('.event-filter.active').attr('name');
-    const highlight_type = $('.strength-filter.active').attr('name');
+    const highlight_type = $('.event-filter.active').attr('name');
+    console.log(highlight_type)
+    const strength_type = $('.strength-filter.active').attr('name');
     const player_id = $('.player_info').attr('id');
     const year = $('.selected-dropdown')[0].attributes.value.textContent;
   
