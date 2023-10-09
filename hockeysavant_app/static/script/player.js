@@ -336,7 +336,7 @@ function updateEventTable(data) {
   table.empty();
   console.log(table);
   data.forEach(function(element){
-    var newRow = '<tr>';
+    var newRow = '<tr class="event-row" x=' + element.coordsX + ' y=' + element.coordsY + ' style: "cursor:pointer">';
     newRow += '<td>' + element.eventDescription + '</td>';
     newRow += '<td>' + '<a href=/video/' + element.gameId + '-' + element.playId + '> Highlight' + '</td>';
     newRow += '</tr>';
@@ -403,6 +403,14 @@ jQuery(document).ready(function($) {
     });
   
     }, 1);
+  });
+
+  $(".event-row tr").click(
+    function () {
+      alert("Mouse entered!");
+    },
+    function () {
+      alert("Mouse left!");
   });
 });
 
