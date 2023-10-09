@@ -211,7 +211,8 @@ height: 60%;
     cursor: pointer;
   }
   .rink-year-selector,
-  .percentile-year-selector{
+  .percentile-year-selector,
+  .event-year-selector{
     position: absolute;
     display: block;
     top: 27px;

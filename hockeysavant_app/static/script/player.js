@@ -3,17 +3,17 @@ function yearDropdown() {
     // Set buttons
   const percentileYearButton = document.getElementById("percentile-year");
   const rinkYearButton = document.getElementById("rink-year");
+  const tableYearButton = document.getElementById("event-year");
   // Set dropdown menus
   const percentileYearDropdown = document.getElementsByClassName("percentile-year-selector")[0];
   const rinkYearDropdown = document.getElementsByClassName("rink-year-selector")[0];
+  const tableYearDropdown = document.getElementsByClassName("event-year-selector")[0];
   // Set options in dropdown menus
   const yearOptions = document.getElementsByClassName("dropdown-select");
   const yearOptionsArray = Array.from(yearOptions);
   // Set year selected
   const yearLabel = document.getElementsByClassName("selected-dropdown");
   const yearLabelArray = Array.from(yearLabel);
-
-
 
   // Create Click event for rink year dropdown
   percentileYearButton.addEventListener("click", function() {
@@ -22,15 +22,17 @@ function yearDropdown() {
     } else if (percentileYearDropdown.style.display == 'none') {
       percentileYearDropdown.style.display = 'block';
     }
-    
   });
+
   yearOptionsArray.forEach(function (element) {
     element.addEventListener("click", function () {
       yearLabel.innerHTML = element.innerText;
       yearLabel[0].attributes.value = element.attributes[0];
       yearLabel[1].attributes.value = element.attributes[0];
+      yearLabel[2].attributes.value = element.attributes[0];
     });
   });
+
   // Create Click event for rink year dropdown
   rinkYearButton.addEventListener("click", function() {
     if (rinkYearDropdown.style.display == 'block') {
@@ -39,6 +41,16 @@ function yearDropdown() {
       rinkYearDropdown.style.display = 'block';
     }
   });
+
+  tableYearButton.addEventListener("click", function() {
+    console.log(tableYearDropdown)
+    if (tableYearDropdown.style.display == 'block') {
+      tableYearDropdown.style.display = 'none';
+    } else if (tableYearDropdown.style.display == 'none') {
+      tableYearDropdown.style.display = 'block';
+    }
+  });
+
   yearOptionsArray.forEach(function (element) {
     element.addEventListener("click", function () {
 
@@ -47,6 +59,9 @@ function yearDropdown() {
 
       yearLabelArray[1].innerHTML = element.innerText;
       yearLabelArray[1].setAttribute('value', element.getAttribute('data-value'))
+
+      yearLabelArray[2].innerHTML = element.innerText;
+      yearLabelArray[2].setAttribute('value', element.getAttribute('data-value'))
       
     });
   });
@@ -334,7 +349,6 @@ function requestPlayerData($) {
 function updateEventTable(data) {
   var table = $('#event-table tbody');
   table.empty();
-  console.log(table);
   data.forEach(function(element){
     var newRow = '<tr class="event-row" x=' + element.coordsX + ' y=' + element.coordsY + ' style: "cursor:pointer">';
     newRow += '<td>' + element.eventDescription + '</td>';

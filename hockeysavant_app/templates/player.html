@@ -412,7 +412,17 @@
             
         </div>
         <div class="player-stats col-sm" id="event-table-container" style="padding: 0px;">
-          <div class="title">2022 Event Table</div>
+          <div class="title">
+            <span class="selected-dropdown-wrapper" style="position: relative;" id="event-year">
+              <span class="selected-dropdown" value="{{ ((player_stats[-1][1])|string) }}">{{ ((player_stats[-1][1])|string)[:4] }}</span>
+              <div class="event-year-selector" style="display: none;">
+                {% for row in player_stats|reverse %}
+                  <div data-value="{{(row[1]|string)}}" class="dropdown-select">{{(row[1]|string)[:4]}}</div>
+                {% endfor %}
+              </div>
+            </span>
+            
+            Event Table</div>
           <div class="table-container">
             <table class="table table-striped" id="event-table">
               <thead class="event-thead">
