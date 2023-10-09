@@ -111,7 +111,7 @@ function updateRink(data) {
 
         data.forEach(dataElement => {
             const x = mapValue(dataElement.coordsX, -100, 100, 0, rink_container.clientWidth);
-            const y = mapValue(-dataElement.coordsY, -100, 100, 0, rink_container.clientWidth * .425);
+            const y = mapValue(-dataElement.coordsY, -42, 42, 0, rink_container.clientWidth * .425);
             
             // Calculate the distance between the click point and the center of the circle
             const distance = Math.sqrt(Math.pow(clickX - x, 2) + Math.pow(clickY - y, 2));
@@ -136,7 +136,7 @@ function updateRink(data) {
     
       data.forEach(dataElement => {
           const x = mapValue(dataElement.coordsX, -100, 100, 0, rink_container.clientWidth);
-          const y = mapValue(-dataElement.coordsY, -100, 100, 0, rink_container.clientWidth * .425);
+          const y = mapValue(-dataElement.coordsY, -42, 42, 0, rink_container.clientWidth * .425);
           
           // Calculate the distance between the click point and the center of the circle
           const distance = Math.sqrt(Math.pow(clickX - x, 2) + Math.pow(clickY - y, 2));
@@ -170,7 +170,7 @@ function updateRink(data) {
     const player_id = $('.player_info').attr('id');
     data.forEach(dataElement => {
         const x = mapValue(dataElement.coordsX, -100, 100, 0, rink_container.clientWidth);
-        const y = mapValue(-dataElement.coordsY, -100, 100, 0, rink_container.clientWidth * .425);
+        const y = mapValue(-dataElement.coordsY, -42, 42, 0, rink_container.clientWidth * .425);
         
         if (dataElement.eventPlayer1 == player_id) {
             new_ctx.fillStyle = "red";
@@ -254,7 +254,7 @@ function copyGoalToCanvas(){
         
         // Map the coordinates if needed (e.g., from [-100, 100] to [0, canvas.width/height])
         x = mapValue(x, -100, 100, 0, canvas.width);
-        y = mapValue(y, -100, 100, 0, canvas.height);
+        y = mapValue(y, -42, 42, 0, canvas.height);
 
         // Set the circle fill color
         ctx.fillStyle = "green";
