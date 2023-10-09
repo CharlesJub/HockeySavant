@@ -64,7 +64,7 @@ body{
 }   
 .player-stats#event-table-container{
     max-width: 40%;
-    /* min-width: 40%; */
+    min-width: 245px;
 }
 
 .btn-spacer {
