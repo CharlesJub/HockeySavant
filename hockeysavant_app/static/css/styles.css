@@ -57,15 +57,15 @@ body{
     min-width: 515px;
 }
 .player-stats#event-rink{
-    /* max-width: 60%; */
     width: 60%;
     min-width: 515px;
-    /* height: 415px; */
     max-width: 900px;
+    height: 490px;
 }   
 .player-stats#event-table-container{
     max-width: 40%;
     min-width: 245px;
+    height: 490px;
 }
 
 .btn-spacer {
