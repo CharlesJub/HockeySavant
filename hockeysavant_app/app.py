@@ -220,7 +220,7 @@ def goal_data(player_id):
     if highlight_type not in ('goals', 'assists', 'goals_for', 'goals_against', 'goal_on'):
         highlight_type = request.args.get('strength')
     if strength_type not in ('all_events', 'ev_events', 'pp_events', 'sh_events', ''):
-        highlight_type = request.args.get('highlight')
+        strength_type = request.args.get('highlight')
 
     strength_type_query = ""
     event_type_query = ""
