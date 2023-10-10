@@ -216,6 +216,12 @@ def goal_data(player_id):
     year = request.args.get('year')
 
 
+    # Temp fix for wierd bug that swaps arg values on server despite no differneces in files
+    if highlight_type not in ('goals', 'assists', 'goals_for', 'goals_against', 'goal_on'):
+        highlight_type = request.args.get('strength')
+    if strength_type not in ('all_events', 'ev_events', 'pp_events', 'sh_events', ''):
+        highlight_type = request.args.get('highlight')
+
     strength_type_query = ""
     event_type_query = ""
     if strength_type == 'all_events':
