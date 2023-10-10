@@ -227,6 +227,11 @@ def goal_data(player_id):
         strength_type_query = '"strength" = \'PP\''
     if strength_type == 'sh_events':
         strength_type_query = '"strength" = \'SH\''
+    if strength_type == 'pp_events' and highlight_type == 'goal_on':
+        strength_type_query = '"strength" = \'SH\''
+    if strength_type == 'sh_events' and highlight_type == 'goal_on':
+        strength_type_query = '"strength" = \'PP\''
+
     print(strength_type_query)
     if highlight_type == 'goals':
         event_type_query = f'"eventType" = \'Goal\' AND "eventPlayer1" = {player_id}'
