@@ -50,7 +50,8 @@
 <body>
   <div class="container" style="margin-bottom: 20px; max-width: 60%;">
     {% if player_info.position == "G" %}
-      <p style="font-weight: bold; font-size: 34px; color: red;">GOALIE STATS ARE BEING WORKED ON!</title> 
+      <p style="font-weight: bold; font-size: 34px; color: red;">GOALIE STATS ARE BEING WORKED ON!</p> 
+
     {% endif %}
       <div class="row">
           <div class="player-stats player-bio col-sm" id="player-info">
@@ -72,6 +73,7 @@
               {% endif %}
               <table class="table table-striped" id="recent-seasons">
                   <tr>
+                    {% if player_info.position != "G" %}
                       <th>Season</th>
                       <th>GP</th>
                       <th>G</th>
@@ -80,19 +82,45 @@
                       <th>S</th>
                       <th>Sh%</th>
                       <th>PIM</th>
+                    {% endif %}
+                    {% if player_info.position == "G" %}
+                      <th>Season</th>
+                      <th>GP</th>
+                      <th>W</th>
+                      <th>L</th>
+                      <th>Sv%</th>
+                      <th>GAA</th>
+                    {% endif %}
                   </tr>
-                  {% for row in player_stats[-3:] %}
-                  <tr class="tr-data">
-                      <td>{{ row[1] }}</td>
-                      <td>{{ row[2]|int }}</td>
-                      <td>{{ row[3]|int }}</td>
-                      <td>{{ row[4]|int }}</td>
-                      <td>{{ row[5]|int }}</td>
-                      <td>{{ row[6]|int }}</td>
-                      <td>{{ '%.2f' | format(row[7]) }}</td>
-                      <td>{{ row[8]|int }}</td>
-                  </tr>
-                  {% endfor %}
+                  {% if player_info.position != "G" %}
+                      {% for row in player_stats[-3:] %}
+                      <tr class="tr-data">
+                          <td>{{ row[1] }}</td>
+                          <td>{{ row[2]|int }}</td>
+                          <td>{{ row[3]|int }}</td>
+                          <td>{{ row[4]|int }}</td>
+                          <td>{{ row[5]|int }}</td>
+                          <td>{{ row[6]|int }}</td>
+                          <td>{{ '%.2f' | format(row[7]) }}</td>
+                          <td>{{ row[8]|int }}</td>
+                      </tr>
+                      {% endfor %}
+                  {% endif %}
+                    {% if player_info.position == "G" %}
+                      {% for row in player_stats[-3:] %}
+                      <tr class="tr-data">
+                          <td>{{ row[1] }}</td>
+                          <td>{{ row[2]|int }}</td>
+                          <td>{{ row[5]|int }}</td>
+                          <td>{{ row[6]|int }}</td>
+                          <td>{{ '%.3f' | format(row[7]) }}</td>
+                          <td>{{ '%.2f' | format(row[8]) }}</td>
+                      </tr>
+                      {% endfor %}
+                  {% endif %}
+
+
+                  
                   {% if player_info.position != "G" %}
                     <tr class="tr-data" style="font-weight: bold;">
                       <td>Career</td>
@@ -103,6 +131,16 @@
                       <td>{{ player_info.careerTotals.regularSeason.shots}}</td>
                       <td>{{ (player_info.careerTotals.regularSeason.shootingPctg * 100) | round(2)}}</td>
                       <td>{{ player_info.careerTotals.regularSeason.pim }}</td>
+                    </tr>
+                  {% endif %}
+                  {% if player_info.position == "G" %}
+                    <tr class="tr-data" style="font-weight: bold;">
+                      <td>Career</td>
+                      <td>{{ player_info.careerTotals.regularSeason.gamesPlayed }}</td>
+                      <td>{{ player_info.careerTotals.regularSeason.wins }}</td>
+                      <td>{{ player_info.careerTotals.regularSeason.losses }}</td>
+                      <td>{{ player_info.careerTotals.regularSeason.savePctg | round(3)}}</td>
+                      <td>{{ player_info.careerTotals.regularSeason.goalsAgainstAvg | round(2)}}</td>
                     </tr>
                   {% endif %}
                   
