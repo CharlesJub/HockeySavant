@@ -191,7 +191,6 @@ def preDraftTeam(season_drafted, seasons):
 @app.route('/skater_percentile/<player_id>')
 def skater_percentile(player_id):
     year = request.args.get('year')
-    print(year)
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -261,7 +260,6 @@ def goal_data(player_id):
                     WHERE {strength_type_query}
                     AND {event_type_query}
                     AND "season"={year}"""
-    print(full_query)
     
     conn = get_db_connection()
     cursor = conn.cursor()
