@@ -323,8 +323,8 @@ function requestRinkData($) {
 function requestPercentileData($) {
   const player_id = $('.player_info').attr('id');
   const year = $('.selected-dropdown')[0].attributes.value.textContent;
-
-  $.ajax({
+  if (position != "G") {
+    $.ajax({
       url: '/skater_percentile/' + player_id,
       type: 'GET',
       dataType: 'json',
@@ -340,6 +340,8 @@ function requestPercentileData($) {
       console.error('Error fetching percentile data: ', error);
       }
   });
+    }
+    
     
 }
 function requestSkaterData($) {
