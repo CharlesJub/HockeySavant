@@ -303,6 +303,25 @@ def video(play_id):
 def about():
     return render_template('about.html')
 
+@app.route('goalie_percentiles/<goalie_id>')
+def goalie_percentiles(goalie_id):
+    year = request.args.get('year')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(f"""SELECT * 
+                       FROM "goalie_percentiles"
+                       WHERE "id" = '{goalie_id}'
+                       AND "season" = '{year}'
+                    """)
+    percentile_column_names = [description[0] for description in cursor.description]
+    percentile_stats = [dict(zip(percentile_column_names, row)) for row in cursor.fetchall()]
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(percentile_stats)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
