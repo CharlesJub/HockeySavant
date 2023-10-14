@@ -1,3 +1,4 @@
 creds.py
 env/
 convert_to_sqlite3.ipynb
+scripts/play_by_play.csv
