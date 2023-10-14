@@ -215,6 +215,7 @@ function interpolateColor(color1, color2, color3, value) {
 
 function updatePercentileGraph(data) {
     const percentileValues = document.querySelectorAll('.percentileValue');
+
     percentileValues.forEach(function (percentileValue){
         const percentile = Math.round(data[0][percentileValue.id]);
         const percentileText = percentileValue.querySelector('#percentile-text');
@@ -341,6 +342,24 @@ function requestPercentileData($) {
       }
   });
     }
+    if (position == "G") {
+      $.ajax({
+        url: '/goalie_percentiles/' + player_id,
+        type: 'GET',
+        dataType: 'json',
+        data: {
+          year: year
+        },
+        success: function(data) {
+        // Handle the data received from the server
+        // Update the HTML on the /players page with the data
+        updatePercentileGraph(data);
+        },
+        error: function(error) {
+        console.error('Error fetching percentile data: ', error);
+        }
+    });
+      }
     
     
 }
@@ -391,6 +410,7 @@ jQuery(document).ready(function($) {
     cachedRinkData = null;
     setTimeout(requestSkaterData($), 1);
   })
+
   
   $('.btn.video-filter').click(function(){
     // Add small wait to make sure the button clicked is the active button
@@ -399,7 +419,7 @@ jQuery(document).ready(function($) {
     const strength_type = $('.strength-filter.active').attr('name');
     const player_id = $('.player_info').attr('id');
     const year = $('.selected-dropdown')[0].attributes.value.textContent;
-  
+      
     $.ajax({
         url: '/goal_data/' + player_id,
         type: 'GET',
