@@ -236,7 +236,7 @@ function updatePercentileGraph(data) {
     const percentile_bar = percentileValue.querySelector('#percentile-bar');
     const percentile_circle = percentileValue.querySelector('#percentile-circle');
     const percentile_head = percentileValue.querySelector('#percentile-head');
-    const bar_width = 15 + (percentile * ((max_x - 105) - 20) / 100);
+    const bar_width = 15 + (percentile * ((max_x - 105) - 30) / 100);
     percentileText.textContent = percentile; 
     percentile_bar.style.width = bar_width + 'px';
     percentile_circle.style.transform = `translate(${105 + bar_width}px, 10px)`
