@@ -214,25 +214,39 @@ function interpolateColor(color1, color2, color3, value) {
   }
 
 function updatePercentileGraph(data) {
-    const percentileValues = document.querySelectorAll('.percentileValue');
+  const percentileValues = document.querySelectorAll('.percentileValue');
+  const max_x = document.querySelector('#percentile-stats').clientWidth;
+  const good_marker = document.querySelector('#good-marker');
+  good_marker.style.transform = `translate(${(max_x - 105)/2}px, 0px)`;
+  const great_marker = document.querySelector('#great-marker');
+  great_marker.style.transform = `translate(${(max_x - 105) - (max_x/12)}px, 0px)`;
+  const good_lines = document.querySelectorAll('#good-line');
+  const great_lines = document.querySelectorAll('#great-line');
+  good_lines.forEach(function(good_line){
+    good_line.setAttribute('x', (max_x+122) / 2)
+  });
+  great_lines.forEach(function(great_line){
+    great_line.setAttribute('x', (max_x - 39))
+  });
 
-    percentileValues.forEach(function (percentileValue){
-        const percentile = Math.round(data[0][percentileValue.id]);
-        const percentileText = percentileValue.querySelector('#percentile-text');
-        const percentile_bar = percentileValue.querySelector('#percentile-bar');
-        const percentile_circle = percentileValue.querySelector('#percentile-circle');
-        const percentile_head = percentileValue.querySelector('#percentile-head');
-        const bar_width = 15 + (percentile * 2.8);
-        percentileText.textContent = percentile; 
-        percentile_bar.style.width = bar_width + 'px';
-        percentile_circle.style.transform = `translate(${105 + bar_width}px, 10px)`
-        // rgb(54, 97, 173), rgb(170, 170, 170), rgb(216, 33, 41)
-        const low = [54, 97, 173];
-        const mid = [170, 170, 170];
-        const high = [216, 33, 41];
-        const interpolatedColor = interpolateColor(low, mid, high, percentile);
-        percentile_bar.style.fill = interpolatedColor;
-        percentile_head.style.fill = interpolatedColor;
+
+  percentileValues.forEach(function (percentileValue){
+    const percentile = Math.round(data[0][percentileValue.id]);
+    const percentileText = percentileValue.querySelector('#percentile-text');
+    const percentile_bar = percentileValue.querySelector('#percentile-bar');
+    const percentile_circle = percentileValue.querySelector('#percentile-circle');
+    const percentile_head = percentileValue.querySelector('#percentile-head');
+    const bar_width = 15 + (percentile * ((max_x - 105) - 20) / 100);
+    percentileText.textContent = percentile; 
+    percentile_bar.style.width = bar_width + 'px';
+    percentile_circle.style.transform = `translate(${105 + bar_width}px, 10px)`
+    // rgb(54, 97, 173), rgb(170, 170, 170), rgb(216, 33, 41)
+    const low = [54, 97, 173];
+    const mid = [170, 170, 170];
+    const high = [216, 33, 41];
+    const interpolatedColor = interpolateColor(low, mid, high, percentile);
+    percentile_bar.style.fill = interpolatedColor;
+    percentile_head.style.fill = interpolatedColor;
         
     });
     
@@ -322,46 +336,50 @@ function requestRinkData($) {
   }
 }
 function requestPercentileData($) {
-  const player_id = $('.player_info').attr('id');
-  const year = $('.selected-dropdown')[0].attributes.value.textContent;
-  if (position != "G") {
-    $.ajax({
-      url: '/skater_percentile/' + player_id,
-      type: 'GET',
-      dataType: 'json',
-      data: {
-        year: year
-      },
-      success: function(data) {
-      // Handle the data received from the server
-      // Update the HTML on the /players page with the data
-      updatePercentileGraph(data);
-      },
-      error: function(error) {
-      console.error('Error fetching percentile data: ', error);
-      }
-  });
-    }
-    if (position == "G") {
+  if (cachedPercentileData) {
+    updatePercentileGraph(cachedPercentileData);
+  }
+  else {
+    const player_id = $('.player_info').attr('id');
+    const year = $('.selected-dropdown')[0].attributes.value.textContent;
+    if (position != "G") {
       $.ajax({
-        url: '/goalie_percentiles/' + player_id,
+        url: '/skater_percentile/' + player_id,
         type: 'GET',
         dataType: 'json',
         data: {
           year: year
         },
         success: function(data) {
-        // Handle the data received from the server
-        // Update the HTML on the /players page with the data
-        updatePercentileGraph(data);
+          cachedPercentileData = data;
+          // Handle the data received from the server
+          // Update the HTML on the /players page with the data
+          updatePercentileGraph(data);
         },
         error: function(error) {
-        console.error('Error fetching percentile data: ', error);
+          console.error('Error fetching percentile data: ', error);
         }
     });
       }
-    
-    
+      if (position == "G") {
+        $.ajax({
+          url: '/goalie_percentiles/' + player_id,
+          type: 'GET',
+          dataType: 'json',
+          data: {
+            year: year
+          },
+          success: function(data) {
+          // Handle the data received from the server
+          // Update the HTML on the /players page with the data
+          updatePercentileGraph(data);
+          },
+          error: function(error) {
+          console.error('Error fetching percentile data: ', error);
+          }
+      });
+        }
+  }
 }
 function requestSkaterData($) {
   requestPercentileData($);
@@ -383,6 +401,7 @@ function updateEventTable(data) {
 
 
 let cachedRinkData = null;
+let cachedPercentileData = null;
 const rink_container = document.getElementById("rink");
 const position = document.getElementsByClassName('player_info')[0].getAttribute('position')
 
@@ -404,10 +423,18 @@ jQuery(document).ready(function($) {
   $(window).on('resize', function() {
     rink_container.style.height = rink_container.clientWidth *.425 + 'px'
     requestRinkData($);
+
+    const svg = document.getElementById('player_stats_chart');
+    const parentWidth = svg.parentElement.clientWidth; // Get the width of the parent container
+    const parentHeight = svg.parentElement.clientHeight; // Get the height of the parent container
+    svg.setAttribute('width', parentWidth);
+    svg.setAttribute('height', parentHeight);
+    requestPercentileData($);
   });
   
   $('.dropdown-select').click(function(){
     cachedRinkData = null;
+    cachedPercentileData = null;
     setTimeout(requestSkaterData($), 1);
   })
 
