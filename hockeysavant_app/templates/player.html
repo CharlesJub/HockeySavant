@@ -685,8 +685,17 @@
         <div class="player-stats player-links col-sm" style="max-width: 50%;">
           <div class="title">External Links</div>
           <a href="https://www.nhl.com/player/{{ player_data[0]}}" target="_blank">NHL</a> <br>
+          {% if player_info.position != "G" %}
           <a href="https://edge.nhl.com/en/skater/{{ player_data[0]}}" target="_blank">NHL EDGE</a> <br>
-          <a href="https://moneypuck.com/player.htm?p={{ player_data[0]}}" target="_blank">MoneyPuck</a> <br>
+          {% endif %}
+          {% if player_info.position == "G" %}
+          <a href="https://edge.nhl.com/en/goalie/{{ player_data[0]}}" target="_blank">NHL EDGE</a> <br>
+          {% endif %}
+
+          
+          {% if player_info.position != "G" %}
+          <a href="https://moneypuck.com/player.htm?p={{ player_data[0]}}" target="_blank">MoneyPuck</a> <br>   
+          {% endif %}
           <a href="https://www.naturalstattrick.com/playerreport.php?fromseason={{ ((player_stats[-1][1])|string) }}&thruseason={{ ((player_stats[-1][1])|string) }}&playerid={{ player_data[0]}}&sit=5v5&stype=2&stdoi=oi&rate=&v=p" target="_blank">NaturalStatTrick</a> <br>
         </div>
         
